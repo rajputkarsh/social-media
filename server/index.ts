@@ -18,7 +18,7 @@ app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({policy: 'cross-origin'}));
 
 
-app.use('/', router);
+app.use('/api', router);
 
 app.listen(process.env.PORT, async () => {
   try{

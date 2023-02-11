@@ -1,7 +1,7 @@
 
 import { ObjectId } from "mongodb";
 import { model, Schema } from "mongoose";
-import { UserModel } from "..";
+import { UserModel } from "../";
 import { CONSTANTS } from "../../constants";
 import { IFriend } from "../../interfaces";
 
@@ -9,12 +9,12 @@ const friendSchema: Schema = new Schema<IFriend>({
   userId: {
     required: true,
     type: ObjectId,
-    ref: UserModel,
+    ref: 'User',
   },
   friend: {
     required: true,
     type: ObjectId,
-    ref: UserModel,
+    ref: 'User',
   },
   status: {
     required: false,
