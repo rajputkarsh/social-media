@@ -1,71 +1,73 @@
-
 import { Request, Response, NextFunction } from "express";
 import Joi from "joi";
 import { MESSAGES } from "../../constants";
 
 class BaseValidator {
+  constructor() {}
 
-    constructor(){
-    }
-
-    async validateHeader(
-      validator: Joi.ObjectSchema | Joi.ArraySchema, 
-      req: Request,
-      res: Response,
-      next: NextFunction
+  async validateHeader(
+    validator: Joi.ObjectSchema | Joi.ArraySchema,
+    req: Request,
+    res: Response,
+    next: NextFunction
   ) {
-  
-      try {
-  
-          const { error: errors, value } = validator.validate(req.header);
+    try {
+      const { error: errors, value } = validator.validate(req.header, {
+        abortEarly: false,
+      });
 
-          if (errors) {
-              res.json(MESSAGES.ERROR.BAD_REQUEST(errors.details.map(error => error.message).join(', ')));
-              return false;
-          } 
-          
-          req.body = value;
-
-          next();
-
-      } catch (error) {
-          res.json({
-              status: MESSAGES.ERROR.INTERNAL_SERVER_ERROR(error as string),
-              message: error
-          })
-          return false
+      if (errors) {
+        res.json(
+          MESSAGES.ERROR.BAD_REQUEST(
+            errors.details.map((error) => error.message).join(", ")
+          )
+        );
+        return false;
       }
+
+      req.body = value;
+
+      next();
+    } catch (error) {
+      res.json({
+        status: MESSAGES.ERROR.INTERNAL_SERVER_ERROR(error as string),
+        message: error,
+      });
+      return false;
+    }
   }
 
-    async validateBody (
-        validator: Joi.ObjectSchema | Joi.ArraySchema, 
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ) {
-    
-        try {
-    
-            const { error: errors, value } = validator.validate(req.body);
+  async validateBody(
+    validator: Joi.ObjectSchema | Joi.ArraySchema,
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const { error: errors, value } = validator.validate(req.body, {
+        abortEarly: false,
+      });
 
-            if (errors) {
-                res.json(MESSAGES.ERROR.BAD_REQUEST(errors.details.map(error => error.message).join(', ')));
-                return false;
-            } 
-            
-            req.body = value;
+      if (errors) {
+        res.json(
+          MESSAGES.ERROR.BAD_REQUEST(
+            errors.details.map((error) => error.message).join(", ")
+          )
+        );
+        return false;
+      }
 
-            next();
+      req.body = value;
 
-        } catch (error) {
-            res.json({
-                status: MESSAGES.ERROR.INTERNAL_SERVER_ERROR(error as string),
-                message: error
-            })
-            return false;
-        }
+      next();
+    } catch (error) {
+      res.json({
+        status: MESSAGES.ERROR.INTERNAL_SERVER_ERROR(error as string),
+        message: error,
+      });
+      return false;
     }
-    
+  }
 }
 
-export default BaseValidator
+export default BaseValidator;

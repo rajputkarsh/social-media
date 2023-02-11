@@ -1,7 +1,7 @@
 
 import { ObjectId } from "mongodb";
 import { model, Schema } from "mongoose";
-import { PostModel } from "..";
+import { PostModel } from "../";
 import { CONSTANTS } from "../../constants";
 import { IImpression } from "../../interfaces";
 
@@ -9,7 +9,7 @@ const impressionSchema: Schema = new Schema<IImpression>({
   postId: {
     required: true,
     type: ObjectId,
-    ref: PostModel,
+    ref: 'Post',
   },
   count: {
     required: true,

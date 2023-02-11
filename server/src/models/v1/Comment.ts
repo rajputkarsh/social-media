@@ -1,7 +1,7 @@
 
 import { ObjectId } from "mongodb";
 import { model, Schema } from "mongoose";
-import { UserModel } from "..";
+import { UserModel } from "../";
 import { CONSTANTS } from "../../constants";
 import { IComment } from "../../interfaces";
 
@@ -13,7 +13,7 @@ const commentSchema: Schema = new Schema<IComment>({
   userId: {
     required: true,
     type: ObjectId,
-    ref: UserModel,
+    ref: 'User',
   },
   upvotes: {
     required: true,

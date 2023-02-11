@@ -1,7 +1,7 @@
 
 import { ObjectId } from "mongodb";
 import { model, Schema } from "mongoose";
-import { UserModel, CommentModel } from "..";
+import { UserModel, CommentModel } from "../";
 import { CONSTANTS } from "../../constants";
 import { IPost } from "../../interfaces";
 
@@ -17,7 +17,7 @@ const postSchema: Schema = new Schema<IPost>({
   postedBy: {
     required: true,
     type: ObjectId,
-    ref: UserModel,
+    ref: 'User',
   },
   upvotes: {
     required: true,
@@ -30,7 +30,7 @@ const postSchema: Schema = new Schema<IPost>({
   comments: {
     required: true,
     type: ObjectId,
-    ref: CommentModel,
+    ref: 'Comment',
   },
   status: {
     required: false,

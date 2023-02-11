@@ -15,7 +15,7 @@ class UserValidator extends BaseValidator{
       email         : Joi.string().email().required(),
       password      : Joi.string().regex(REGEX.PASSWORD).required(),
       occupation    : Joi.string().required(),
-      profilePicture: Joi.string().required(),
+      profilePicture: Joi.string().uri().required(),
       location      : Joi.string().required(),
 
     });
