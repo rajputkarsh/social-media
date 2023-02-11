@@ -2,11 +2,14 @@
 export namespace UserRequest {
 
   interface Register{
-    firstName: string,
-    lastName : string,
-    userName : string,
-    email    : string,
-    password : string,
+    firstName     : string,
+    lastName      : string,
+    userName      : string,
+    email         : string,
+    password      : string,
+    occupation    : string,
+    profilePicture: string,
+    location      : string,
   }
 
   interface Login{
