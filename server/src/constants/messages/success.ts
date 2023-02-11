@@ -18,4 +18,11 @@ export default {
     data   : data,
   }),
 
+  FILE_UPLOADED_SUCCESSFULLY: (data: Object) => ({
+    status : HTTP_STATUS_CODE.OK,
+    type   : 'FILE_UPLOADED_SUCCESSFULLY',
+    message: 'File Uploaded Successfully',
+    data   : data,
+  })
+
 };

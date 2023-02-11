@@ -15,6 +15,12 @@ export default {
     message: `You're not authorised to access this page`,
   },
 
+  PAYLOAD_TOO_LARGE: {
+    status : HTTP_CODES.PAYLOAD_TOO_LARGE,
+    type   : 'PAYLOAD_TOO_LARGE',
+    message: 'The payload has exceeded the maximum size limit' 
+  },
+
   INTERNAL_SERVER_ERROR: (data: string) => ({
     status : HTTP_CODES.INTERNAL_SERVER_ERROR,
     type   : 'INTERNAL_SERVER_ERROR',

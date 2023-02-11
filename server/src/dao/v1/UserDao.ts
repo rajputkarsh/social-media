@@ -50,7 +50,7 @@ class UserDao {
 
   async updateProfile(userId: string, user: Partial<IUser>) {
     try{
-      return UserModel.updateOne({_id: new mongoose.Schema.Types.ObjectId(userId)}, user);
+      return UserModel.updateOne({_id: new mongoose.Types.ObjectId(userId)}, user);
     } catch(error){
       throw error;
     }
