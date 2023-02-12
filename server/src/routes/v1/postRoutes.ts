@@ -10,7 +10,6 @@ postRouter.post(
   "/",
   postValidator.add,
   userMiddleware.authenticate,
-
   async  function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
     
   }
@@ -18,9 +17,7 @@ postRouter.post(
 
 postRouter.get(
   "/",
-  postValidator.list,
   userMiddleware.authenticate,
-
   async  function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
     
   }
@@ -29,7 +26,6 @@ postRouter.get(
 postRouter.get(
   "/:id",
   userMiddleware.authenticate,
-
   async  function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
     
   }
@@ -38,7 +34,6 @@ postRouter.get(
 postRouter.get(
   "/:userId/posts",
   userMiddleware.authenticate,
-
   async  function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
     
   }
@@ -47,7 +42,7 @@ postRouter.get(
 postRouter.patch(
   "/:id",
   userMiddleware.authenticate,
-
+  postValidator.update,
   async  function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
     
   }
@@ -56,7 +51,6 @@ postRouter.patch(
 postRouter.post(
   "/:id/like",
   userMiddleware.authenticate,
-
   async  function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
     
   }
@@ -65,7 +59,6 @@ postRouter.post(
 postRouter.delete(
   "/:id/like",
   userMiddleware.authenticate,
-
   async  function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
     
   }

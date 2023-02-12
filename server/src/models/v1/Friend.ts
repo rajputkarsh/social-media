@@ -1,7 +1,6 @@
 
 import { ObjectId } from "mongodb";
 import { model, Schema } from "mongoose";
-import { UserModel } from "../";
 import { CONSTANTS } from "../../constants";
 import { IFriend } from "../../interfaces";
 
