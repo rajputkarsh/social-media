@@ -58,9 +58,17 @@ class VoteDao{
     }
   }
 
+  deleteByQuery(query: Object){
+    try{
+      return VoteModel.findByIdAndUpdate(query);
+    } catch(error){
+      throw error;
+    }
+  }
+
   delete(id: mongoose.Types.ObjectId){
     try{
-      return VoteModel.findByIdAndUpdate(id, {status: CONSTANTS.STATUS.DELETED});
+      return VoteModel.findByIdAndDelete(id);
     } catch(error){
       throw error;
     }

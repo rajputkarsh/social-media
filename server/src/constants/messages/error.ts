@@ -64,4 +64,23 @@ export default {
     type   : 'FRIEND_DOES_NOT_EXIST',
     message: 'This friend does not exist',
   },
+
+  // post related
+  POST_ALREADY_LIKED: {
+    status : HTTP_CODES.BAD_REQUEST,
+    type   : 'POST_ALREADY_LIKED',
+    message: 'You cannot like a post twice',
+  },
+
+  POST_ALREADY_UNLIKED:{
+    status : HTTP_CODES.BAD_REQUEST,
+    type   : 'POST_ALREADY_UNLIKED',
+    message: 'You cannot unlike a post twice',
+  },
+
+  POST_NOT_LIKED: {
+    status : HTTP_CODES.BAD_REQUEST,
+    type   : 'POST_NOT_LIKED',
+    message: 'You have not liked this post',
+  },
 }

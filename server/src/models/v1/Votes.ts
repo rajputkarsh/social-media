@@ -9,9 +9,15 @@ const voteSchema: Schema = new Schema<IVote>({
     required: true,
     type    : ObjectId,
   },
+  for  : {
+    required: true,
+    type    : String,
+    enum    : Object.values(CONSTANTS.VOTE_FOR),
+  },
   type  : {
     required: true,
     type    : String,
+    enum    : Object.values(CONSTANTS.VOTE_TYPE),
   },
   userId: {
     required: true,
@@ -22,7 +28,7 @@ const voteSchema: Schema = new Schema<IVote>({
     required: false,
     type    : String,
     default : CONSTANTS.STATUS.ACTIVE, 
-    enum    : Object.values(CONSTANTS.STATUS)
+    enum    : Object.values(CONSTANTS.STATUS),
   }
 },
 {

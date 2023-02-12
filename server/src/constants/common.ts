@@ -17,7 +17,13 @@ const VOTE_TYPE = {
   DOWNVOTE: 'DOWNVOTE',
 }
 
+const VOTE_FOR = {
+  POST   : 'POST',
+  COMMENT: 'COMMENT',
+}
+
 export default {
+  VOTE_FOR,
   VOTE_TYPE,
   USER_TYPE,
   STATUS,

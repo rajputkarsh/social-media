@@ -18,8 +18,7 @@ postRouter.post(
       const result = await postController.add({
         text    : req.body.text,
         media   : req.body.media,
-        postedBy: req.user
-      });
+      }, req.user as string);
   
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.POSTED_SUCCESSFULLY(result));
     } catch(error){
@@ -36,7 +35,7 @@ postRouter.get(
       const page = req.query.page ?? CONSTANTS.DEFAULT_PAGE_NUMBER;
       const limit = req.query.limit ?? CONSTANTS.DEFAULT_PAGE_SIZE;
       
-      const result = postController.list({}, page, limit);
+      const result = postController.list({}, page as number, limit as number);
 
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.POSTS_FETCHED_SUCCESSFULLY(result));
     } catch(error){
@@ -51,7 +50,7 @@ postRouter.get(
   async  function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
     try{
       const postId = req.params['id'];
-      const result = postController.list({_id: new mongoose.Types.ObjectId(postId)}, 1, 1);
+      const result = postController.getPostById(postId);
 
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.POSTS_FETCHED_SUCCESSFULLY(result));
     } catch(error){
@@ -69,7 +68,7 @@ postRouter.get(
       const page = req.query.page ?? CONSTANTS.DEFAULT_PAGE_NUMBER;
       const limit = req.query.limit ?? CONSTANTS.DEFAULT_PAGE_SIZE;
 
-      const result = postController.list({postedBy: new mongoose.Types.ObjectId(userId)}, page, limit);
+      const result = postController.getPostsByUserId(userId, page as number, limit as number);
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.POSTS_FETCHED_SUCCESSFULLY(result));
     } catch(error){
       res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
@@ -101,7 +100,7 @@ postRouter.post(
     try{
       const postId   = req.params['id'];
       
-      const result = postController.like(postId, req.user);
+      const result = postController.like(postId, req.user as string);
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.POST_LIKED_SUCCESSFULLY(result));
     } catch(error){
       res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
@@ -116,7 +115,7 @@ postRouter.delete(
     try{
       const postId   = req.params['id'];
       
-      const result = postController.unlike(postId, req.user);
+      const result = postController.unlike(postId, req.user as string);
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.POST_UNLIKED_SUCCESSFULLY(result));      
     } catch(error){
       res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
