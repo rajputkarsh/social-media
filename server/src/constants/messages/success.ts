@@ -51,4 +51,40 @@ export default {
     type   : 'FRIEND_REMOVED_SUCCESSFULLY',
     message: 'Friend removed sucessfully',
   },
+
+  // post related
+  POSTS_FETCHED_SUCCESSFULLY: (data: Object) => ({
+    status : HTTP_STATUS_CODE.OK,
+    type   : 'POSTS_FETCHED_SUCCESSFULLY',
+    message: 'Posts fetched successfully',
+    data   : data,
+  }),
+
+  POSTED_SUCCESSFULLY: (data: Object) => ({
+    status : HTTP_STATUS_CODE.OK,
+    type   : 'POSTED_SUCCESSFULLY',
+    message: 'You\'ve posted successfully',
+    data   : data,
+  }),
+
+  POST_UPDATED_SUCCESSFULLY: (data: Object) => ({
+    status : HTTP_STATUS_CODE.OK,
+    type   : 'POST_UPDATED_SUCCESSFULLY',
+    message: 'Post updated successfully',
+    data   : data,
+  }),
+
+  POST_LIKED_SUCCESSFULLY: (data: Object) => ({
+    status : HTTP_STATUS_CODE.OK,
+    type   : 'POST_LIKED_SUCCESSFULLY',
+    message: 'Post liked successfully',
+    data   : data,
+  }),
+
+  POST_UNLIKED_SUCCESSFULLY: (data: Object) => ({
+    status : HTTP_STATUS_CODE.OK,
+    type   : 'POST_UNLIKED_SUCCESSFULLY',
+    message: 'Post unliked successfully',
+    data   : data,
+  }),
 };
