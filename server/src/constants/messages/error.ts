@@ -27,6 +27,7 @@ export default {
     message: data,
   }),
 
+  // uswer related
   EMAIL_ALREADY_REGISTERED: {
     status : HTTP_CODES.BAD_REQUEST,
     type   : 'EMAIL_ALREADY_REGISTERED',
@@ -49,6 +50,18 @@ export default {
     status : HTTP_CODES.BAD_REQUEST,
     type   : 'INVALID_USER',
     message: 'The provided user does not exist',
-  }
+  },
   
+  // friend related
+  ALREADY_ADDED_FRIEND: {
+    status : HTTP_CODES.BAD_REQUEST,
+    type   : 'ALREADY_ADDED_FRIEND',
+    message: 'User already has been added as a friend',
+  },
+
+  FRIEND_DOES_NOT_EXIST: {
+    status : HTTP_CODES.BAD_REQUEST,
+    type   : 'FRIEND_DOES_NOT_EXIST',
+    message: 'This friend does not exist',
+  },
 }

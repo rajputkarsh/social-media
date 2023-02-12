@@ -23,6 +23,32 @@ export default {
     type   : 'FILE_UPLOADED_SUCCESSFULLY',
     message: 'File Uploaded Successfully',
     data   : data,
-  })
+  }),
 
+  USER_INFO: (data: Object) => ({
+    status : HTTP_STATUS_CODE.OK,
+    type   : 'USER_INFO',
+    message: 'User Information fetched sucessfully',
+    data   : data,
+  }),
+
+  // friends related
+  USER_FRIEND_LIST: (data: Object) => ({
+    status : HTTP_STATUS_CODE.OK,
+    type   : 'USER_FRIEND_LIST',
+    message: 'User Friend List fetched sucessfully',
+    data   : data,
+  }),
+
+  FRIEND_ADDED_SUCCESSFULLY: {
+    status : HTTP_STATUS_CODE.OK,
+    type   : 'FRIEND_ADDED_SUCCESSFULLY',
+    message: 'Friend added sucessfully',
+  },
+
+  FRIEND_REMOVED_SUCCESSFULLY: {
+    status : HTTP_STATUS_CODE.OK,
+    type   : 'FRIEND_REMOVED_SUCCESSFULLY',
+    message: 'Friend removed sucessfully',
+  },
 };
