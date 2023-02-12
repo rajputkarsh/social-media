@@ -1,7 +1,6 @@
-import fileUpload from "express-fileupload";
+
 import { MESSAGES } from "../../constants";
 import firebaseFunctions from "../../utils/firebase";
-
 
 class UploadController {
   async upload(file: any){

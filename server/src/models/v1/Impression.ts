@@ -1,7 +1,6 @@
 
 import { ObjectId } from "mongodb";
 import { model, Schema } from "mongoose";
-import { PostModel } from "../";
 import { CONSTANTS } from "../../constants";
 import { IImpression } from "../../interfaces";
 
