@@ -1,8 +1,9 @@
 
 import { NextFunction, Response, Router } from "express";
-import { HTTP_STATUS_CODE, MESSAGES } from "../../constants";
+import { CONSTANTS, HTTP_STATUS_CODE, MESSAGES } from "../../constants";
 import { userController } from "../../controllers";
 import { CustomRequest } from "../../interfaces/request";
+import { userMiddleware } from "../../middlewares";
 import { userValidator } from "../../validators";
 
 const userRouter = Router();
@@ -11,7 +12,6 @@ userRouter.post(
   '/register', 
   userValidator.register,
   async function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
-    
     try{
       const result = await userController.register({
         firstName     : req.body.firstName,
@@ -30,13 +30,12 @@ userRouter.post(
       res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
     }
   } 
-)
+);
 
 userRouter.post(
   '/login', 
   userValidator.login,
   async function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
-    
     try{
       const result = await userController.login({
         userIdentifier: req.body.userIdentifier,
@@ -49,6 +48,62 @@ userRouter.post(
       res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
     }
   } 
-)
+);
+
+userRouter.get(
+  "/:id", 
+  userMiddleware.authenticate,
+  async  function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
+    try{
+      const result = await userController.getUserInfo(req.params['id']);
+      res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.USER_INFO(result));
+    } catch(error){
+      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
+    }
+  }
+);
+
+userRouter.get(
+  "/:id/friends", 
+  userMiddleware.authenticate,
+  async  function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
+    try{
+      const page = req.query.page ?? CONSTANTS.DEFAULT_PAGE_NUMBER;
+      const limit = req.query.limit ?? CONSTANTS.DEFAULT_PAGE_SIZE;
+
+      const result = await userController.getFriendList(req.params['id'], page as number, limit as number);
+
+      res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.USER_FRIEND_LIST(result));
+    } catch(error){
+      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
+    }
+  }
+);
+
+userRouter.post(
+  ":/id/:friendId", 
+  userMiddleware.authenticate,
+  async  function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
+    try{
+      const result = await userController.updateFriend(req.params['id'], req.params['friendId'], true);
+      res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.FRIEND_ADDED_SUCCESSFULLY);
+    } catch(error){
+      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
+    }
+  }
+);
+
+userRouter.delete(
+  ":/id/:friendId", 
+  userMiddleware.authenticate,
+  async  function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
+    try{
+      const result = await userController.updateFriend(req.params['id'], req.params['friendId'], false);
+      res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.FRIEND_REMOVED_SUCCESSFULLY);
+    } catch(error){
+      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
+    }
+  }
+);
 
 export default userRouter;

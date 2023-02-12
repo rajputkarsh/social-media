@@ -1,8 +1,9 @@
 import { CONSTANTS, MESSAGES } from "../../constants";
-import { userDao } from "../../dao";
+import { friendDao, userDao } from "../../dao";
 import { hashPassword } from "../../utils/common";
 import { generateToken } from "../../utils/jwt";
 import { UserRequest } from "../../interfaces/request";
+import mongoose from "mongoose";
 
 class UserController {
 
@@ -73,6 +74,44 @@ class UserController {
         profilePicture: user.data[0].profilePicture,
       };      
 
+    } catch(error){
+      throw error;
+    }
+  }
+
+  getUserInfo(userId: string){
+    try{
+      return userDao.list({_id: new mongoose.Types.ObjectId(userId)}, 1, 1);
+    } catch(error){
+      throw error;
+    }
+  }
+
+  getFriendList(userId: string, page: number, limit: number){
+    try{
+      return friendDao.list({userId: new mongoose.Types.ObjectId(userId)}, page, limit);
+    } catch(error){
+      throw error;
+    }
+  }
+
+  async updateFriend(userId: string, friendId: string, add:boolean){
+    try{
+      if(add){
+        // add friend
+        let friends = await friendDao.list({userId: new mongoose.Types.ObjectId(userId), friend: new mongoose.Types.ObjectId()}, 1, 1);
+        if(friends.count > 0) throw MESSAGES.ERROR.ALREADY_ADDED_FRIEND;
+
+        await friendDao.save(new mongoose.Types.ObjectId(userId), new mongoose.Types.ObjectId(friendId));
+        return MESSAGES.SUCCESS.FRIEND_ADDED_SUCCESSFULLY;
+      } else{
+        // delete friend
+        let friends = await friendDao.list({userId: new mongoose.Types.ObjectId(userId), friend: new mongoose.Types.ObjectId()}, 1, 1);
+        if(friends.count == 0) throw MESSAGES.ERROR.FRIEND_DOES_NOT_EXIST;
+
+        friendDao.delete(new mongoose.Types.ObjectId(userId), new mongoose.Types.ObjectId(friendId));
+        return MESSAGES.SUCCESS.FRIEND_REMOVED_SUCCESSFULLY;
+      }
     } catch(error){
       throw error;
     }

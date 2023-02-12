@@ -15,7 +15,7 @@ class UserMiddleware{
       const user = await userDao.list({_id: new mongoose.Types.ObjectId(jwtPayload.payload?.userId) }, 1, 1);
       if(user.count < 1) throw MESSAGES.ERROR.USER_NOT_AUTHORISED;
 
-      req.user = user.data[0]._id;
+      req.user = user.data[0]._id.toString();
       next();
     } catch(error){
       res.status(HTTP_STATUS_CODE.UNAUTHORIZED).send(error);

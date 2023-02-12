@@ -1,12 +1,11 @@
 import mongoose from "mongoose";
 import { CONSTANTS } from "../../constants";
-import { IUser } from "../../interfaces";
-import { UserModel } from "../../models";
+import { FriendModel } from "../../models";
 
-class UserDao {
-  async list(query: Object, page: number, limit: number) {
-    try {
-      const data = await UserModel.aggregate([
+class FriendDao {
+  async list(query: Object, page: number, limit: number){
+    try{
+      const data = await FriendModel.aggregate([
         {
           $match: {
             ...query,
@@ -26,36 +25,41 @@ class UserDao {
         },
       ]);
 
-      const count: number = (await UserModel.aggregate([
+      const count: number = (await FriendModel.aggregate([
         {
           $match: {
-            ...query,
+            userId: userId,
+            status: CONSTANTS.STATUS.ACTIVE
+          },
+        },
+        {
+          $sort: {
+            createdAt: -1,
           },
         },
       ])).length;
 
       return {data, count};
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  save(user: IUser){
-    try{
-      return UserModel.create(user);
     } catch(error){
       throw error;
     }
   }
 
-  updateProfile(userId: string, user: Partial<IUser>) {
+  save(userId: mongoose.Types.ObjectId, friendId: mongoose.Types.ObjectId){
     try{
-      return UserModel.updateOne({_id: new mongoose.Types.ObjectId(userId)}, user);
+
     } catch(error){
       throw error;
     }
   }
 
+  delete(userId: mongoose.Types.ObjectId, friendId: mongoose.Types.ObjectId){
+    try{
+
+    } catch(error){
+      throw error;
+    }
+  }
 }
 
-export default new UserDao();
+export default new FriendDao();
