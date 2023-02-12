@@ -28,7 +28,7 @@ class FriendDao {
       const count: number = (await FriendModel.aggregate([
         {
           $match: {
-            userId: userId,
+            ...query,
             status: CONSTANTS.STATUS.ACTIVE
           },
         },

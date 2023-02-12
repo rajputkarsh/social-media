@@ -12,7 +12,13 @@ const STATUS = {
 const DEFAULT_PAGE_NUMBER = 1;
 const DEFAULT_PAGE_SIZE   = 10;
 
+const VOTE_TYPE = {
+  UPVOTE  : 'UPVOTE',
+  DOWNVOTE: 'DOWNVOTE',
+}
+
 export default {
+  VOTE_TYPE,
   USER_TYPE,
   STATUS,
   DEFAULT_PAGE_NUMBER,

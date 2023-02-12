@@ -17,20 +17,7 @@ const postSchema: Schema = new Schema<IPost>({
     required: true,
     type: ObjectId,
     ref: 'User',
-  },
-  upvotes: {
-    required: true,
-    type: [ObjectId],
-  },
-  downvotes: {
-    required: true,
-    type: [ObjectId],
-  },
-  comments: {
-    required: true,
-    type: ObjectId,
-    ref: 'Comment',
-  },
+},
   status: {
     required: false,
     type: String,

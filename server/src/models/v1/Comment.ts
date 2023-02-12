@@ -14,13 +14,10 @@ const commentSchema: Schema = new Schema<IComment>({
     type: ObjectId,
     ref: 'User',
   },
-  upvotes: {
+  postId: {
     required: true,
-    type: [ObjectId],
-  },
-  downvotes: {
-    required: true,
-    type: [ObjectId],
+    type: ObjectId,
+    ref: 'Post',
   },
   status: {
     required: false,

@@ -5,3 +5,4 @@ export {default as ImpressionModel} from './v1/Impression';
 export {default as PostModel} from './v1/Post';
 export {default as ProfileViewsModel} from './v1/ProfileView';
 export {default as UserModel} from './v1/User';
+export {default as VoteModel} from './v1/Votes';
