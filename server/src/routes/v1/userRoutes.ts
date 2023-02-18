@@ -50,6 +50,25 @@ userRouter.post(
   } 
 );
 
+userRouter.post(
+  '/validate', 
+  userMiddleware.authenticate,
+  async function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
+    try{
+      const result = await userController.getUserInfo(req.user as string);
+
+      if(result.count > 0){
+        res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.USER_INFO({isValid: true}));
+      } else{
+        res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.USER_INFO({isValid: false}));
+      }
+  
+    } catch(error){
+      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
+    }
+  } 
+);
+
 userRouter.get(
   "/:id", 
   userMiddleware.authenticate,

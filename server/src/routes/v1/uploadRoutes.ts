@@ -9,7 +9,6 @@ const userRouter = Router();
 
 userRouter.post(
   '/',
-  userMiddleware.authenticate,
   async function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
     try{
       const result = await uploadController.upload(req.files);

@@ -7,11 +7,9 @@ class UploadController {
     try{
       if(!file) throw MESSAGES.ERROR.BAD_REQUEST;
 
-      const uploadedFile = await firebaseFunctions.uploadMedia(`${new Date().getTime()}_${file['files']['name']}`, file['files']['data']
-      );
-
-      console.log(uploadedFile.ref.fullPath);
-      return uploadedFile.ref.fullPath;
+      const uploadedFile = await firebaseFunctions.uploadMedia(`${new Date().getTime()}_${file['files']['name']}`, file['files']['data']);
+      const filePath = await firebaseFunctions.fetchDownloadUrl(uploadedFile.ref.fullPath);
+      return filePath;
     } catch(error){
       throw error;
     }

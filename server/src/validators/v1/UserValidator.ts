@@ -27,11 +27,11 @@ class UserValidator extends BaseValidator{
 
     const validationSchema = Joi.object({
       userIdentifier: Joi.string().required(),
-      password      : Joi.string().regex(REGEX.PASSWORD).required(),
+      password      : Joi.string().required(),
     });
     
     this.validateBody(validationSchema, req, res, next);
-  }  
+  };
 
 }
 

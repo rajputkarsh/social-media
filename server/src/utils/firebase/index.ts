@@ -1,7 +1,7 @@
 
 import dotenv from 'dotenv';
 import { FirebaseApp, initializeApp } from "firebase/app";
-import { FirebaseStorage, getStorage, ref, StorageReference, uploadBytes } from 'firebase/storage';
+import { FirebaseStorage, getStorage, ref, StorageReference, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 class FirebaseFunctions {
 
@@ -25,8 +25,6 @@ class FirebaseFunctions {
     const app        = initializeApp(firebaseConfig);
     const storage    = getStorage(app);
 
-    console.log(process.env.FIREBASE_STORAGE_BUCKET);
-
     this.#app = app;
     this.#storage = storage;
 
@@ -36,6 +34,15 @@ class FirebaseFunctions {
     try{
       const storageRef: StorageReference = ref(this.#storage, fileName);
       return uploadBytes(storageRef, media);
+    } catch(error){
+      throw error;
+    }
+  }
+
+  fetchDownloadUrl(fileName: string){
+    try{
+      const storageRef: StorageReference = ref(this.#storage, fileName);
+      return getDownloadURL(storageRef)
     } catch(error){
       throw error;
     }

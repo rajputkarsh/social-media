@@ -1,9 +1,47 @@
-import React from 'react'
+import { Box, useMediaQuery } from "@mui/material";
+import { useSelector } from "react-redux";
+import Navbar from "../../components/navbar";
+import UserInfo from "../../components/widgets/userInfo";
+import AddPost from "../../components/widgets/addPost";
+import PostList from "../../components/widgets/postList";
+import Advertisememt from "../../components/widgets/advertisement";
+import FriendList from "../../components/widgets/friendList";
+import { ReduxState } from "../../interfaces";
 
-function Home() {
+const Home = () => {
+  const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
+  const { _id, picturePath } = useSelector((state: ReduxState) => state.user);
+
   return (
-    <div>Home</div>
-  )
-}
+    <Box>
+      <Navbar />
+      <Box
+        width="100%"
+        padding="2rem 6%"
+        display={isNonMobileScreens ? "flex" : "block"}
+        gap="0.5rem"
+        justifyContent="space-between"
+      >
+        <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
+          <UserInfo userId={_id} picturePath={picturePath} />
+        </Box>
+        <Box
+          flexBasis={isNonMobileScreens ? "42%" : undefined}
+          mt={isNonMobileScreens ? undefined : "2rem"}
+        >
+          <AddPost picturePath={picturePath} />
+          <PostList userId={_id} />
+        </Box>
+        {isNonMobileScreens && (
+          <Box flexBasis="26%">
+            <Advertisememt />
+            <Box m="2rem 0" />
+            <FriendList userId={_id} />
+          </Box>
+        )}
+      </Box>
+    </Box>
+  );
+};
 
-export default Home
+export default Home;

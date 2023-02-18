@@ -4,12 +4,14 @@ import Home from './pages/home';
 import Login from './pages/login';
 import Register from './pages/register';
 import Profile  from './pages/profile';
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { CssBaseline, PaletteMode, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "./theme";
 import { ReduxState } from './interfaces';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
 
@@ -19,22 +21,24 @@ function App() {
 
   return (
     <div className="App">
+      <ToastContainer />
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Routes>
-            <Route path="/" element={<Login />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route
-              path="/home"
-              element={isAuth ? <Home /> : <Navigate to="/" />}
+              path="/"
+              element={isAuth ? <Home /> : <Navigate to="/login" />}
             />
             <Route
               path="/profile/"
-              element={isAuth ? <Profile /> : <Navigate to="/" />}
+              element={isAuth ? <Profile /> : <Navigate to="/login" />}
             />
             <Route
               path="/profile/:userId"
-              element={isAuth ? <Profile /> : <Navigate to="/" />}
+              element={isAuth ? <Profile /> : <Navigate to="/login" />}
             />
           </Routes>
         </ThemeProvider>
