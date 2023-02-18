@@ -58,9 +58,9 @@ userRouter.post(
       const result = await userController.getUserInfo(req.user as string);
 
       if(result.count > 0){
-        res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.USER_INFO({isValid: true}));
+        res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.USER_VALIDATED({isValid: true}));
       } else{
-        res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.USER_INFO({isValid: false}));
+        res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.USER_VALIDATED({isValid: false}));
       }
   
     } catch(error){

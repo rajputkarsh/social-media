@@ -18,8 +18,10 @@ import { SETTINGS, URL } from "../../constants";
 import { toast } from "react-toastify";
 
 const Login = () => {
-  // // validate if a legit user is already logged in
+
   const userInfo = useSelector((state: ReduxState) => state);
+
+  // validate if a legit user is already logged in
   useEffect(() => {
     if(Object.keys(userInfo).length > 0 && userInfo?.user?.token ){
       fetch(

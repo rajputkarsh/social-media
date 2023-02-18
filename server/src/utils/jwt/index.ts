@@ -6,5 +6,5 @@ export const generateToken = (data : Object)  => {
 }
 
 export const decodeToken = (token: string) => {
-  return jwt.verify(token, process.env.JWT_SECRET_KEY as string, {complete: true}) as JwtPayload;
+  return jwt.verify(token, process.env.JWT_SECRET_KEY as string) as JwtPayload;
 }

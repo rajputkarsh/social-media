@@ -32,6 +32,13 @@ export default {
     data   : data,
   }),
 
+  USER_VALIDATED: (data: Object) => ({
+    status : HTTP_STATUS_CODE.OK,
+    type   : 'USER_VALIDATED',
+    message: 'User validated sucessfully',
+    data   : data,
+  }),
+
   // friends related
   USER_FRIEND_LIST: (data: Object) => ({
     status : HTTP_STATUS_CODE.OK,

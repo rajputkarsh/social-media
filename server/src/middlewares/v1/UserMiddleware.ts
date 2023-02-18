@@ -12,8 +12,11 @@ class UserMiddleware{
       if(!req.headers.authorization || token.length != 2 ) throw MESSAGES.ERROR.USER_NOT_AUTHORISED;
       const jwtPayload = decodeToken(token[1]);
 
-      const user = await userDao.list({_id: new mongoose.Types.ObjectId(jwtPayload.payload?.userId) }, 1, 1);
-      if(user.count < 1) throw MESSAGES.ERROR.USER_NOT_AUTHORISED;
+      const user = await userDao.list({_id: new mongoose.Types.ObjectId(jwtPayload?.userId) }, 1, 1);
+      const jwtExpTime  = new Date((jwtPayload.exp as number)*1000).getTime();
+      const currentTime = new Date().getTime();      
+
+      if((currentTime > jwtExpTime) || (user.count < 1)) throw MESSAGES.ERROR.USER_NOT_AUTHORISED;
 
       req.user = user.data[0]._id.toString();
       next();
