@@ -19,24 +19,24 @@ import { toast } from "react-toastify";
 
 const Login = () => {
   // // validate if a legit user is already logged in
-  // const userInfo = useSelector((state: ReduxState) => state);
-  // useEffect(() => {
-  //   if(Object.keys(userInfo).length > 0 && userInfo?.user?.token ){
-  //     fetch(
-  //       URL.VALIDATE_TOKEN,
-  //       {
-  //         headers: {authorization: `Bearer ${userInfo?.user?.token}`},
-  //         method: "POST",
-  //       }
-  //     ).then(response => {
-  //       response.json().then((data) => {
-  //         if(data.status == 200 && data.data.isValid == true){
-  //           navigate('/');
-  //         }
-  //       })
-  //     })
-  //   }
-  // }, []);
+  const userInfo = useSelector((state: ReduxState) => state);
+  useEffect(() => {
+    if(Object.keys(userInfo).length > 0 && userInfo?.user?.token ){
+      fetch(
+        URL.VALIDATE_TOKEN,
+        {
+          headers: {authorization: `Bearer ${userInfo?.user?.token}`},
+          method: "POST",
+        }
+      ).then(response => {
+        response.json().then((data) => {
+          if(data.status == 200 && data.data.isValid == true){
+            navigate('/');
+          }
+        })
+      })
+    }
+  }, []);
 
   const { palette }: { palette: CustomTheme } = useTheme();
   const dispatch = useDispatch();
