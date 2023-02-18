@@ -15,7 +15,7 @@ import * as yup from "yup";
 import Dropzone from "react-dropzone";
 import { toast } from "react-toastify";
 import FlexContainer from "../../containers/flexContainer";
-import { setLogin } from "../../state";
+import { setLogin, setLogout } from "../../state";
 import { uploadFile } from "../../utils";
 import { CustomTheme, ReduxState, CustomResponseBody } from "../../interfaces";
 import { MESSAGES, REGEX, SETTINGS, URL } from "../../constants";
@@ -36,6 +36,8 @@ function Register(){
         response.json().then((data) => {
           if(data.status == 200 && data.data.isValid == true){
             navigate('/');
+          } else{
+            dispatch(setLogout());
           }
         })
       })

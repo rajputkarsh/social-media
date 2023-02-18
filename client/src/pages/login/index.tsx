@@ -12,7 +12,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setLogin } from "../../state";
+import { setLogin, setLogout } from "../../state";
 import { CustomTheme, ReduxState } from "../../interfaces";
 import { SETTINGS, URL } from "../../constants";
 import { toast } from "react-toastify";
@@ -34,6 +34,8 @@ const Login = () => {
         response.json().then((data) => {
           if(data.status == 200 && data.data.isValid == true){
             navigate('/');
+          } else{
+            dispatch(setLogout())
           }
         })
       })
