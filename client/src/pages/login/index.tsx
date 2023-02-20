@@ -19,15 +19,15 @@ import { toast } from "react-toastify";
 
 const Login = () => {
 
-  const userInfo = useSelector((state: ReduxState) => state);
+  const userInfo = useSelector((state: ReduxState) => state.user);
 
   // validate if a legit user is already logged in
   useEffect(() => {
-    if(Object.keys(userInfo).length > 0 && userInfo?.user?.token ){
+    if(userInfo && Object.keys(userInfo).length > 0 && userInfo?.token ){
       fetch(
-        URL.VALIDATE_TOKEN,
+        URL.VALIDATE_TOKEN(),
         {
-          headers: {authorization: `Bearer ${userInfo?.user?.token}`},
+          headers: {authorization: `Bearer ${userInfo?.token}`},
           method: "POST",
         }
       ).then(response => {
@@ -58,7 +58,7 @@ const Login = () => {
   };
 
   const login = async (values: typeof initialLoginValues) => {
-    const loggedInResponse = await fetch(URL.LOGIN, {
+    const loggedInResponse = await fetch(URL.LOGIN(), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
@@ -72,8 +72,16 @@ const Login = () => {
 
     dispatch(
       setLogin({
-        userName: loggedIn.data?.userName,
-        token: loggedIn.data?.token,
+        userId        : loggedIn.data?.userId,
+        userName      : loggedIn.data?.userName,
+        token         : loggedIn.data?.token,
+        firstName     : loggedIn.data?.firstName,
+        lastName      : loggedIn.data?.lastName,
+        email         : loggedIn.data?.email,
+        location      : loggedIn.data?.location,
+        occupation    : loggedIn.data?.occupation,
+        profilePicture: loggedIn.data?.profilePicture,
+        friends       : loggedIn.data?.friends
       })
     );
 

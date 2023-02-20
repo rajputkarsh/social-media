@@ -4,24 +4,24 @@ import WidgetContainer from "../../../containers/widgetContainer";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setFriends } from "../../../state";
-import { ReduxState } from "../../../interfaces";
+import { CustomTheme, ReduxState } from "../../../interfaces";
+import { URL } from "../../../constants";
 
-const FriendListWidget = ({ userId }) => {
+const FriendListWidget = ({ userId }: { userId: string }) => {
   const dispatch = useDispatch();
-  const { palette } = useTheme();
-  const token = useSelector((state: ReduxState) => state.token);
-  const friends = useSelector((state: ReduxState) => state.user.friends);
+  const { palette }: { palette: CustomTheme } = useTheme();
+  const userInfo = useSelector((state: ReduxState) => state.user);
 
   const getFriends = async () => {
     const response = await fetch(
-      `http://localhost:3001/users/${userId}/friends`,
+      URL.LIST_FRIENDS(userId),
       {
         method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${userInfo?.token}` },
       }
     );
     const data = await response.json();
-    dispatch(setFriends({ friends: data }));
+    dispatch(setFriends({ friends: data.data?.data }));
   };
 
   useEffect(() => {
@@ -39,13 +39,13 @@ const FriendListWidget = ({ userId }) => {
         Friend List
       </Typography>
       <Box display="flex" flexDirection="column" gap="1.5rem">
-        {friends.map((friend) => (
+        {userInfo?.friends.map((friend: {[key: string]: any}) => (
           <Friend
             key={friend._id}
             friendId={friend._id}
             name={`${friend.firstName} ${friend.lastName}`}
             subtitle={friend.occupation}
-            userPicturePath={friend.picturePath}
+            profilePicture={friend.profilePicture}
           />
         ))}
       </Box>

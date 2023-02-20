@@ -24,7 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "../../state";
 import { useNavigate } from "react-router-dom";
 import FlexContainer from "../../containers/flexContainer";
-import { ReduxState } from "../../interfaces";
+import { CustomTheme, ReduxState } from "../../interfaces";
 import { SETTINGS } from "../../constants";
 
 const Navbar = () => {
@@ -34,12 +34,12 @@ const Navbar = () => {
   const user = useSelector((state: ReduxState) => state.user);
   const isNonMobileScreens: boolean = useMediaQuery("(min-width: 1000px)");
 
-  const theme: any = useTheme();
-  const neutralLight = theme.palette.neutral.light;
-  const dark = theme.palette.neutral.dark;
-  const background = theme.palette.background.default;
-  const primaryLight = theme.palette.primary.light;
-  const alt = theme.palette.background.alt;
+  const { palette } : { palette: CustomTheme } = useTheme();
+  const neutralLight = palette.neutral.light;
+  const dark = palette.neutral.dark;
+  const background = palette.background.default;
+  const primaryLight = palette.primary.light;
+  const alt = palette.background.alt;
 
   const fullName = `${user?.firstName} ${user?.lastName}`;
 
@@ -81,7 +81,7 @@ const Navbar = () => {
       {isNonMobileScreens ? (
         <FlexContainer gap="2rem">
           <IconButton onClick={() => dispatch(setMode())}>
-            {theme.palette.mode === "dark" ? (
+            {palette.mode === "dark" ? (
               <DarkMode sx={{ fontSize: "25px" }} />
             ) : (
               <LightMode sx={{ color: dark, fontSize: "25px" }} />
@@ -158,7 +158,7 @@ const Navbar = () => {
               onClick={() => dispatch(setMode())}
               sx={{ fontSize: "25px" }}
             >
-              {theme.palette.mode === "dark" ? (
+              {palette.mode === "dark" ? (
                 <DarkMode sx={{ fontSize: "25px" }} />
               ) : (
                 <LightMode sx={{ color: dark, fontSize: "25px" }} />

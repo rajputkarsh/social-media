@@ -10,7 +10,7 @@ import { ReduxState } from "../../interfaces";
 
 const Home = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
-  const { _id, picturePath } = useSelector((state: ReduxState) => state.user);
+  const userInfo = useSelector((state: ReduxState) => state.user);
 
   return (
     <Box>
@@ -23,20 +23,20 @@ const Home = () => {
         justifyContent="space-between"
       >
         <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
-          <UserInfo userId={_id} picturePath={picturePath} />
+          <UserInfo userId={userInfo?.userId} profilePicture={userInfo?.profilePicture} />
         </Box>
         <Box
           flexBasis={isNonMobileScreens ? "42%" : undefined}
           mt={isNonMobileScreens ? undefined : "2rem"}
         >
-          <AddPost picturePath={picturePath} />
-          <PostList userId={_id} />
+          <AddPost/>
+          <PostList />
         </Box>
         {isNonMobileScreens && (
           <Box flexBasis="26%">
             <Advertisememt />
             <Box m="2rem 0" />
-            <FriendList userId={_id} />
+            <FriendList userId={userInfo?.userId} />
           </Box>
         )}
       </Box>

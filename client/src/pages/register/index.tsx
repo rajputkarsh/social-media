@@ -27,7 +27,7 @@ function Register(){
   useEffect(() => {
     if(Object.keys(userInfo).length > 0 && userInfo?.user?.token ){
       fetch(
-        URL.VALIDATE_TOKEN,
+        URL.VALIDATE_TOKEN(),
         {
           headers: {authorization: `Bearer ${userInfo?.user?.token}`},
           method: "POST",
@@ -100,7 +100,7 @@ function Register(){
     formData.append("profilePicture", profilePicture.data?.url);
 
     const savedUserResponse = await fetch(
-      URL.REGISTER,
+      URL.REGISTER(),
       {
         method: "POST",
         body: formData,
@@ -115,8 +115,16 @@ function Register(){
 
     dispatch(
       setLogin({
-        userName: savedUser.data?.userName,
-        token   : savedUser.data?.token,
+        userId        : savedUser.data?.userId,
+        userName      : savedUser.data?.userName,
+        token         : savedUser.data?.token,
+        firstName     : savedUser.data?.firstName,
+        lastName      : savedUser.data?.lastName,
+        email         : savedUser.data?.email,
+        location      : savedUser.data?.location,
+        occupation    : savedUser.data?.occupation,
+        profilePicture: savedUser.data?.profilePicture,
+        friends       : savedUser.data?.friends
       })
     );    
 

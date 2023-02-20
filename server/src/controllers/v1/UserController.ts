@@ -25,6 +25,7 @@ class UserController {
 
       return {
         token,
+        userId        : savedUser._id.toString(),
         firstName     : savedUser.firstName,
         lastName      : savedUser.lastName,
         userName      : savedUser.userName,
@@ -32,6 +33,7 @@ class UserController {
         location      : savedUser.location,
         occupation    : savedUser.occupation,
         profilePicture: savedUser.profilePicture,
+        friends       : [],
       };
 
     } catch(error){
@@ -65,6 +67,7 @@ class UserController {
 
       return {
         token,
+        userId        : user.data[0]._id.toString(),
         firstName     : user.data[0].firstName,
         lastName      : user.data[0].lastName,
         userName      : user.data[0].userName,
@@ -72,6 +75,7 @@ class UserController {
         location      : user.data[0].location,
         occupation    : user.data[0].occupation,
         profilePicture: user.data[0].profilePicture,
+        friends       : user.data[0].friends,
       };      
 
     } catch(error){

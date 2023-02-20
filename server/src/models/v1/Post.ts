@@ -10,8 +10,9 @@ const postSchema: Schema = new Schema<IPost>({
     type: String,
   },
   media: {
-    required: true,
+    required: false,
     type: String,
+    default: ""
   },
   postedBy: {
     required: true,

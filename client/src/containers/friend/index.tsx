@@ -5,30 +5,36 @@ import { useNavigate } from "react-router-dom";
 import { setFriends } from "../../state";
 import FlexContainer from "../flexContainer";
 import ProfilePicture from "../../components/profilePicture";
-import { ReduxState } from "../../interfaces";
+import { CustomTheme, ReduxState } from "../../interfaces";
+import { useState } from "react";
 
-const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
+interface FriendInfo {
+  friendId: string,
+  name: string,
+  subtitle: string,
+  profilePicture: string,
+};
+
+const Friend = ({ friendId, name, subtitle, profilePicture }: FriendInfo) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { _id } = useSelector((state: ReduxState) => state.user);
-  const token = useSelector((state: ReduxState) => state.token);
-  const friends = useSelector((state: ReduxState) => state.user.friends);
+  const userInfo = useSelector((state: ReduxState) => state.user);
 
-  const { palette } = useTheme();
+  const { palette }: { palette: CustomTheme } = useTheme();
   const primaryLight = palette.primary.light;
   const primaryDark = palette.primary.dark;
   const main = palette.neutral.main;
   const medium = palette.neutral.medium;
 
-  const isFriend = friends.find((friend) => friend._id === friendId);
+  const isFriend = userInfo?.friends.find((friend: {[key: string]: any}) => friend._id === friendId);
 
   const patchFriend = async () => {
     const response = await fetch(
-      `http://localhost:3001/users/${_id}/${friendId}`,
+      `http://localhost:3001/users/${userInfo?.userId}/${friendId}`,
       {
         method: "PATCH",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${userInfo?.token}`,
           "Content-Type": "application/json",
         },
       }
@@ -40,7 +46,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
   return (
     <FlexContainer>
       <FlexContainer gap="1rem">
-        <ProfilePicture image={userPicturePath} size="55px" />
+        <ProfilePicture image={profilePicture} size="55px" />
         <Box
           onClick={() => {
             navigate(`/profile/${friendId}`);

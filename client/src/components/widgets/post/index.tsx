@@ -11,27 +11,37 @@ import WidgetContainer from "../../../containers/widgetContainer";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPost } from "../../../state";
-import { ReduxState } from "../../../interfaces";
+import { CustomTheme, ReduxState } from "../../../interfaces";
+import { SETTINGS } from "../../../constants";
 
-const PostWidget = ({
+interface IPost {
+  postId: string;
+  postUser: {[key: string]: any};
+  text: string;
+  media: string;
+  votes: {[key: string]: any};
+  comments: {[key: string]: any};  
+}
+
+const Post = ({
   postId,
-  postUserId,
-  name,
-  description,
-  location,
-  picturePath,
-  userPicturePath,
-  likes,
+  postUser,
+  text,
+  media,
+  votes,
   comments,
-}) => {
+}: IPost) => {
   const [isComments, setIsComments] = useState(false);
   const dispatch = useDispatch();
-  const token = useSelector((state: ReduxState) => state.token);
-  const loggedInUserId = useSelector((state: ReduxState) => state.user._id);
-  const isLiked = Boolean(likes[loggedInUserId]);
-  const likeCount = Object.keys(likes).length;
+  const loggedInUser = useSelector((state: ReduxState) => state?.user);
 
-  const { palette } = useTheme();
+  const upvotes   = votes.filter((vote: {[key: string]: any}) => vote.type ===  SETTINGS.COMMON.VOTE_TYPE.UPVOTE);
+  const downvotes = votes.filter((vote: {[key: string]: any}) => vote.type ===  SETTINGS.COMMON.VOTE_TYPE.DOWNVOTE);
+
+  const isLiked   = upvotes.filter((vote: {[key: string]: any}) => vote.userId === loggedInUser?.userId);
+  const isDisiked = downvotes.filter((vote: {[key: string]: any}) => vote.userId === loggedInUser?.userId);
+
+  const { palette }: { palette: CustomTheme } = useTheme();
   const main = palette.neutral.main;
   const primary = palette.primary.main;
 
@@ -39,10 +49,10 @@ const PostWidget = ({
     const response = await fetch(`http://localhost:3001/posts/${postId}/like`, {
       method: "PATCH",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${loggedInUser?.token}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ userId: loggedInUserId }),
+      body: JSON.stringify({ userId: loggedInUser?.userId }),
     });
     const updatedPost = await response.json();
     dispatch(setPost({ post: updatedPost }));
@@ -51,21 +61,21 @@ const PostWidget = ({
   return (
     <WidgetContainer m="2rem 0">
       <Friend
-        friendId={postUserId}
-        name={name}
-        subtitle={location}
-        userPicturePath={userPicturePath}
+        friendId={postUser?._id}
+        name={[postUser?.firstName, postUser?.lastName].join(" ")}
+        subtitle={postUser?.location}
+        profilePicture={postUser?.profilePicture || ""}
       />
       <Typography color={main} sx={{ mt: "1rem" }}>
-        {description}
+        {text}
       </Typography>
-      {picturePath && (
+      {media && (
         <img
           width="100%"
           height="auto"
           alt="post"
           style={{ borderRadius: "0.75rem", marginTop: "0.75rem" }}
-          src={`http://localhost:3001/assets/${picturePath}`}
+          src={media}
         />
       )}
       <FlexContainer mt="0.25rem">
@@ -78,7 +88,7 @@ const PostWidget = ({
                 <FavoriteBorderOutlined />
               )}
             </IconButton>
-            <Typography>{likeCount}</Typography>
+            <Typography>{upvotes.length}</Typography>
           </FlexContainer>
 
           <FlexContainer gap="0.3rem">
@@ -95,11 +105,11 @@ const PostWidget = ({
       </FlexContainer>
       {isComments && (
         <Box mt="0.5rem">
-          {comments.map((comment, i) => (
+          {comments.map((comment: {[key: string]: any}, i: number) => (
             <Box key={`${name}-${i}`}>
               <Divider />
               <Typography sx={{ color: main, m: "0.5rem 0", pl: "1rem" }}>
-                {comment}
+                {comment.text}
               </Typography>
             </Box>
           ))}
@@ -110,4 +120,4 @@ const PostWidget = ({
   );
 };
 
-export default PostWidget;
+export default Post;

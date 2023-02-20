@@ -17,7 +17,7 @@ class PostDao{
         },
         {
           $lookup: {
-            from: 'user',
+            from: 'users',
             localField: 'postedBy',
             foreignField: '_id',
             as: 'user'
@@ -28,7 +28,7 @@ class PostDao{
             user: {
                 "$arrayElemAt": ["$user", -1]
             }
-        }
+          }
         },
         {
           $lookup: {

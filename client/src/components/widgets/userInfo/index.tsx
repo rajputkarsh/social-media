@@ -11,24 +11,25 @@ import WidgetContainer from "../../../containers/widgetContainer";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ReduxState } from "../../../interfaces";
+import { ReduxState, UserDetails } from "../../../interfaces";
+import { URL } from "../../../constants";
 
-const UserInfo = ({ userId, picturePath }: {userId: string, picturePath: string}) => {
+const UserInfo = ({ userId, profilePicture }: {userId: string, profilePicture: string}) => {
   const [user, setUser] = useState(null);
   const { palette }: {palette: any} = useTheme();
   const navigate = useNavigate();
-  const token = useSelector((state: ReduxState) => state.token);
+  const token = useSelector((state: ReduxState) => state?.user?.token);
   const dark = palette.neutral.dark;
   const medium = palette.neutral.medium;
   const main = palette.neutral.main;
 
   const getUser = async () => {
-    const response = await fetch(`http://localhost:3001/users/${userId}`, {
+    const response = await fetch(URL.USER_INFO(userId), {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     });
-    const data = await response.json();
-    setUser(data);
+    const result = await response.json();
+    setUser(result?.data?.data[0]);
   };
 
   useEffect(() => {
@@ -44,10 +45,11 @@ const UserInfo = ({ userId, picturePath }: {userId: string, picturePath: string}
     lastName,
     location,
     occupation,
-    viewedProfile,
-    impressions,
     friends,
-  } = user;
+  }: UserDetails = user;
+
+  const viewedProfile=0, impressions=0;
+
 
   return (
     <WidgetContainer>
@@ -58,7 +60,7 @@ const UserInfo = ({ userId, picturePath }: {userId: string, picturePath: string}
         onClick={() => navigate(`/profile/${userId}`)}
       >
         <FlexContainer gap="1rem">
-          <ProfilePicture image={picturePath} size={"60px"} />
+          <ProfilePicture image={profilePicture} size={"60px"} />
           <Box>
             <Typography
               variant="h4"
@@ -73,10 +75,10 @@ const UserInfo = ({ userId, picturePath }: {userId: string, picturePath: string}
             >
               {firstName} {lastName}
             </Typography>
-            <Typography color={medium}>{friends.length} friends</Typography>
+            <Typography color={medium}>{friends?.length} friends</Typography>
           </Box>
         </FlexContainer>
-        <ManageAccountsOutlined />
+        <ManageAccountsOutlined sx={{cursor: 'pointer'}} />
       </FlexContainer>
 
       <Divider />
@@ -129,7 +131,6 @@ const UserInfo = ({ userId, picturePath }: {userId: string, picturePath: string}
               <Typography color={medium}>Social Network</Typography>
             </Box>
           </FlexContainer>
-          <EditOutlined sx={{ color: main }} />
         </FlexContainer>
 
         <FlexContainer gap="1rem">
@@ -142,7 +143,6 @@ const UserInfo = ({ userId, picturePath }: {userId: string, picturePath: string}
               <Typography color={medium}>Network Platform</Typography>
             </Box>
           </FlexContainer>
-          <EditOutlined sx={{ color: main }} />
         </FlexContainer>
       </Box>
     </WidgetContainer>

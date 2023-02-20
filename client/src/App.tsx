@@ -17,7 +17,7 @@ function App() {
 
   const mode = useSelector((state: ReduxState) => state.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode as PaletteMode)), [mode]);
-  const isAuth = Boolean(useSelector((state: ReduxState) => state.token));
+  const isAuth = Boolean(useSelector((state: ReduxState) => state?.user?.token));
 
   return (
     <div className="App">

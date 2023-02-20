@@ -14,6 +14,14 @@ class UserDao {
           },
         },
         {
+          $lookup: {
+            from: 'friends',
+            localField: '_id',
+            foreignField: 'userId',
+            as: 'friends'            
+          }
+        },
+        {
           $sort: {
             createdAt: -1,
           },

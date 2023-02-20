@@ -6,6 +6,7 @@ const initialState: ReduxState = {
   user: null,
   token: null,
   posts: [],
+  friends: [],
 };
 
 export const authSlice = createSlice({
@@ -23,8 +24,8 @@ export const authSlice = createSlice({
       state.token = null;
     },
     setFriends: (state: ReduxState, action) => {
-      if (state.user) {
-        state.user.friends = action.payload.friends;
+      if (state.friends) {
+        state.friends = action.payload.friends;
       } else {
         console.error("user friends non-existent :(");
       }

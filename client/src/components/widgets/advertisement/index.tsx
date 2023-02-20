@@ -1,9 +1,10 @@
 import { Typography, useTheme } from "@mui/material";
 import FlexContainer from "../../../containers/flexContainer";
 import WidgetContainer from "../../../containers/widgetContainer";
+import { CustomTheme } from "../../../interfaces";
 
 const Advertisement = () => {
-  const { palette } = useTheme();
+  const { palette }: { palette: CustomTheme } = useTheme();
   const dark = palette.neutral.dark;
   const main = palette.neutral.main;
   const medium = palette.neutral.medium;

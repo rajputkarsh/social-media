@@ -11,4 +11,11 @@ export default {
     HEADING: 'Please fill the below form for registration',
   },
 
+  COMMON: {
+    VOTE_TYPE : {
+      UPVOTE  : 'UPVOTE',
+      DOWNVOTE: 'DOWNVOTE',
+    },
+  },
+
 }

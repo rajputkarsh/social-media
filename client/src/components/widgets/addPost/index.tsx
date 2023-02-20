@@ -24,43 +24,66 @@ import WidgetContainer from "../../../containers/widgetContainer";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "../../../state";
+import { CustomResponseBody, CustomTheme, ReduxState } from "../../../interfaces";
+import { MESSAGES, URL } from "../../../constants";
+import { uploadFile } from "../../../utils";
+import { toast } from "react-toastify";
 
-const AddWidget = ({ picturePath }) => {
+const AddPost = () => {
+
   const dispatch = useDispatch();
-  const [isImage, setIsImage] = useState(false);
-  const [image, setImage] = useState(null);
+  const [isFile, setIsFile] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [fileType, setFileType] = useState<string>("");
   const [post, setPost] = useState("");
-  const { palette } = useTheme();
-  const { _id } = useSelector((state) => state.user);
-  const token = useSelector((state) => state.token);
+  const { palette } : { palette: CustomTheme } = useTheme();
+  const userInfo = useSelector((state: ReduxState) => state.user);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const mediumMain = palette.neutral.mediumMain;
   const medium = palette.neutral.medium;
 
   const handlePost = async () => {
     const formData = new FormData();
-    formData.append("userId", _id);
-    formData.append("description", post);
-    if (image) {
-      formData.append("picture", image);
-      formData.append("picturePath", image.name);
+    formData.append("postedBy", userInfo?.userId);
+    formData.append("text", post);
+    if (file) {
+
+      // upload picture
+      const apiResponse = await uploadFile(file);
+      const mediaResponse: CustomResponseBody = await apiResponse.json();
+
+      if (mediaResponse.status !== 200) {
+        toast.error(mediaResponse.message);
+        return;
+      }
+
+      formData.append("media", mediaResponse.data?.url);
     }
 
-    const response = await fetch(`http://localhost:3001/posts`, {
+    const response = await fetch(URL.ADD_POST(), {
       method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${userInfo?.token}` },
       body: formData,
     });
+
     const posts = await response.json();
-    dispatch(setPosts({ posts }));
-    setImage(null);
+
+    if(posts.status !== 200){
+      toast.error(posts.message);
+      return;
+    }
+
+    dispatch(setPosts([ posts.data ]));
+    setFile(null);
     setPost("");
+
+    toast.success(MESSAGES.SUCCESS.POSTED_SUCCESSFULLY);
   };
 
   return (
     <WidgetContainer>
       <FlexContainer gap="1.5rem">
-        <ProfilePicture image={picturePath} />
+        <ProfilePicture image={userInfo?.profilePicture} size={'60px'}/>
         <InputBase
           placeholder="What's on your mind..."
           onChange={(e) => setPost(e.target.value)}
@@ -73,7 +96,7 @@ const AddWidget = ({ picturePath }) => {
           }}
         />
       </FlexContainer>
-      {isImage && (
+      {isFile && (
         <Box
           border={`1px solid ${medium}`}
           borderRadius="5px"
@@ -81,9 +104,8 @@ const AddWidget = ({ picturePath }) => {
           p="1rem"
         >
           <Dropzone
-            acceptedFiles=".jpg,.jpeg,.png"
             multiple={false}
-            onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}
+            onDrop={(acceptedFiles) => setFile((prev) => acceptedFiles[0])}
           >
             {({ getRootProps, getInputProps }) => (
               <FlexContainer>
@@ -95,18 +117,18 @@ const AddWidget = ({ picturePath }) => {
                   sx={{ "&:hover": { cursor: "pointer" } }}
                 >
                   <input {...getInputProps()} />
-                  {!image ? (
-                    <p>Add Image Here</p>
+                  {!file ? (
+                    <p>Add {fileType} Here</p>
                   ) : (
                     <FlexContainer>
-                      <Typography>{image.name}</Typography>
+                      <Typography>{file.name}</Typography>
                       <EditOutlined />
                     </FlexContainer>
                   )}
                 </Box>
-                {image && (
+                {file && (
                   <IconButton
-                    onClick={() => setImage(null)}
+                    onClick={() => setFile((prev) => null)}
                     sx={{ width: "15%" }}
                   >
                     <DeleteOutlined />
@@ -121,11 +143,12 @@ const AddWidget = ({ picturePath }) => {
       <Divider sx={{ margin: "1.25rem 0" }} />
 
       <FlexContainer>
-        <FlexContainer gap="0.25rem" onClick={() => setIsImage(!isImage)}>
+        <FlexContainer gap="0.25rem" onClick={() => setIsFile(!isFile)}>
           <ImageOutlined sx={{ color: mediumMain }} />
           <Typography
             color={mediumMain}
             sx={{ "&:hover": { cursor: "pointer", color: medium } }}
+            onClick={() => {setFileType('Image')}}
           >
             Image
           </Typography>
@@ -135,17 +158,35 @@ const AddWidget = ({ picturePath }) => {
           <>
             <FlexContainer gap="0.25rem">
               <GifBoxOutlined sx={{ color: mediumMain }} />
-              <Typography color={mediumMain}>Clip</Typography>
+              <Typography
+                color={mediumMain}
+                sx={{ "&:hover": { cursor: "pointer", color: medium } }}
+                onClick={() => {setFileType('Clip')}}
+              >
+                Clip
+              </Typography>
             </FlexContainer>
 
             <FlexContainer gap="0.25rem">
               <AttachFileOutlined sx={{ color: mediumMain }} />
-              <Typography color={mediumMain}>Attachment</Typography>
+              <Typography
+                color={mediumMain}
+                sx={{ "&:hover": { cursor: "pointer", color: medium } }}
+                onClick={() => {setFileType('Attachment')}}
+              >
+                Attachment
+              </Typography>
             </FlexContainer>
 
             <FlexContainer gap="0.25rem">
               <MicOutlined sx={{ color: mediumMain }} />
-              <Typography color={mediumMain}>Audio</Typography>
+              <Typography
+                color={mediumMain}
+                sx={{ "&:hover": { cursor: "pointer", color: medium } }}
+                onClick={() => {setFileType('Audio')}}
+              >
+                Audio
+              </Typography>
             </FlexContainer>
           </>
         ) : (
@@ -170,4 +211,4 @@ const AddWidget = ({ picturePath }) => {
   );
 };
 
-export default AddWidget;
+export default AddPost;
