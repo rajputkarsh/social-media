@@ -11,12 +11,12 @@ import WidgetContainer from "../../../containers/widgetContainer";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ReduxState, UserDetails } from "../../../interfaces";
+import { CustomTheme, ReduxState, UserDetails } from "../../../interfaces";
 import { URL } from "../../../constants";
 
 const UserInfo = ({ userId, profilePicture }: {userId: string, profilePicture: string}) => {
   const [user, setUser] = useState(null);
-  const { palette }: {palette: any} = useTheme();
+  const { palette }: {palette: CustomTheme} = useTheme();
   const navigate = useNavigate();
   const token = useSelector((state: ReduxState) => state?.user?.token);
   const dark = palette.neutral.dark;
@@ -46,10 +46,9 @@ const UserInfo = ({ userId, profilePicture }: {userId: string, profilePicture: s
     location,
     occupation,
     friends,
+    profileViews,
+    currentLevel,
   }: UserDetails = user;
-
-  const viewedProfile=0, impressions=0;
-
 
   return (
     <WidgetContainer>
@@ -68,7 +67,6 @@ const UserInfo = ({ userId, profilePicture }: {userId: string, profilePicture: s
               fontWeight="500"
               sx={{
                 "&:hover": {
-                  color: palette.primary.light,
                   cursor: "pointer",
                 },
               }}
@@ -100,51 +98,19 @@ const UserInfo = ({ userId, profilePicture }: {userId: string, profilePicture: s
       {/* THIRD ROW */}
       <Box p="1rem 0">
         <FlexContainer mb="0.5rem">
-          <Typography color={medium}>Who's viewed your profile</Typography>
+          <Typography color={medium}>Profile Views</Typography>
           <Typography color={main} fontWeight="500">
-            {viewedProfile}
+            {profileViews}
           </Typography>
         </FlexContainer>
         <FlexContainer>
-          <Typography color={medium}>Impressions of your post</Typography>
+          <Typography color={medium}>Current Level</Typography>
           <Typography color={main} fontWeight="500">
-            {impressions}
+            {currentLevel}
           </Typography>
         </FlexContainer>
       </Box>
 
-      <Divider />
-
-      {/* FOURTH ROW */}
-      <Box p="1rem 0">
-        <Typography fontSize="1rem" color={main} fontWeight="500" mb="1rem">
-          Social Profiles
-        </Typography>
-
-        <FlexContainer gap="1rem" mb="0.5rem">
-          <FlexContainer gap="1rem">
-            <img src="../assets/twitter.png" alt="twitter" />
-            <Box>
-              <Typography color={main} fontWeight="500">
-                Twitter
-              </Typography>
-              <Typography color={medium}>Social Network</Typography>
-            </Box>
-          </FlexContainer>
-        </FlexContainer>
-
-        <FlexContainer gap="1rem">
-          <FlexContainer gap="1rem">
-            <img src="../assets/linkedin.png" alt="linkedin" />
-            <Box>
-              <Typography color={main} fontWeight="500">
-                Linkedin
-              </Typography>
-              <Typography color={medium}>Network Platform</Typography>
-            </Box>
-          </FlexContainer>
-        </FlexContainer>
-      </Box>
     </WidgetContainer>
   );
 };

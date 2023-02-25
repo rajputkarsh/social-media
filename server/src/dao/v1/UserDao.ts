@@ -22,6 +22,26 @@ class UserDao {
           }
         },
         {
+          $lookup: {
+            from: 'profileViews',
+            localField: '_id',
+            foreignField: 'userId',
+            as: 'profileViews'       
+          }
+        },
+        {
+          $addFields: {
+            profileViews: {
+              $size: '$profileViews',
+            },
+          },
+        },
+        {
+          $addFields: {
+            currentLevel: 1,
+          },
+        },
+        {
           $sort: {
             createdAt: -1,
           },

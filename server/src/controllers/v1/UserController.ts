@@ -33,6 +33,9 @@ class UserController {
         location      : savedUser.location,
         occupation    : savedUser.occupation,
         profilePicture: savedUser.profilePicture,
+        profileViews  : 0,
+        currentLevel  : 0,
+        impressions   : 0,
         friends       : [],
       };
 
@@ -76,6 +79,9 @@ class UserController {
         occupation    : user.data[0].occupation,
         profilePicture: user.data[0].profilePicture,
         friends       : user.data[0].friends,
+        profileViews  : user.data[0].profileViews,
+        currentLevel  : user.data[0].currentLevel,
+        impressions   : user.data[0].impressions,
       };      
 
     } catch(error){

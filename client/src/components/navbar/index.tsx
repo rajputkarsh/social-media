@@ -38,7 +38,6 @@ const Navbar = () => {
   const neutralLight = palette.neutral.light;
   const dark = palette.neutral.dark;
   const background = palette.background.default;
-  const primaryLight = palette.primary.light;
   const alt = palette.background.alt;
 
   const fullName = `${user?.firstName} ${user?.lastName}`;
@@ -53,29 +52,29 @@ const Navbar = () => {
           onClick={() => navigate("/")}
           sx={{
             "&:hover": {
-              color: primaryLight,
               cursor: "pointer",
             },
           }}
         >
           { SETTINGS.APP_NAME }
         </Typography>
-        {isNonMobileScreens && (
+      </FlexContainer>
+
+      {isNonMobileScreens && (
           <FlexContainer
             sx={{
               backgroundColor: { neutralLight },
               borderRadius: "9px",
-              gap: "3rem",
+              gap: "0rem",
               padding: "0.1rem 1.5rem",
             }}
           >
-            <InputBase placeholder="Search..." />
+            <InputBase sx={{width:'25rem'}} placeholder="Search..." />
             <IconButton>
               <Search />
             </IconButton>
           </FlexContainer>
         )}
-      </FlexContainer>
 
       {/* DESKTOP NAV */}
       {isNonMobileScreens ? (
@@ -89,7 +88,6 @@ const Navbar = () => {
           </IconButton>
           <Message sx={{ fontSize: "25px" }} />
           <Notifications sx={{ fontSize: "25px" }} />
-          <Help sx={{ fontSize: "25px" }} />
           <FormControl variant="standard">
             <Select
               value={fullName}
