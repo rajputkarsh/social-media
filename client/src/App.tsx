@@ -12,8 +12,11 @@ import { themeSettings } from "./theme";
 import { ReduxState } from './interfaces';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { fetchInterceptor } from './interceptors';
 
 function App() {
+
+  fetchInterceptor();
 
   const mode = useSelector((state: ReduxState) => state.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode as PaletteMode)), [mode]);
