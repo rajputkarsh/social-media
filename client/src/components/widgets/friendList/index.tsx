@@ -10,6 +10,7 @@ import { URL } from "../../../constants";
 const FriendListWidget = ({ userId }: { userId: string }) => {
   const dispatch = useDispatch();
   const { palette }: { palette: CustomTheme } = useTheme();
+  const friendList = useSelector((state: ReduxState) => state.friends);
   const userInfo = useSelector((state: ReduxState) => state.user);
 
   const getFriends = async () => {
@@ -39,15 +40,16 @@ const FriendListWidget = ({ userId }: { userId: string }) => {
         Friend List
       </Typography>
       <Box display="flex" flexDirection="column" gap="1.5rem">
-        {userInfo?.friends.map((friend: {[key: string]: any}) => (
-          <Friend
-            key={friend._id}
-            friendId={friend._id}
-            name={`${friend.firstName} ${friend.lastName}`}
-            subtitle={friend.occupation}
-            profilePicture={friend.profilePicture}
-          />
-        ))}
+        {friendList?.map((friend: {[key: string]: any}) => (
+            <Friend
+              key={friend.friend._id}
+              friendId={friend.friend._id}
+              name={`${friend.friend.firstName} ${friend.friend.lastName}`}
+              subtitle={friend.friend.occupation}
+              profilePicture={friend.friend.profilePicture}
+            />
+          )
+        )}
       </Box>
     </WidgetContainer>
   );

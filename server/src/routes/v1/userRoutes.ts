@@ -26,8 +26,8 @@ userRouter.post(
 
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.USER_REGISTRATION(result));
   
-    } catch(error){
-      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
+    } catch(error: any){
+      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
     }
   } 
 );
@@ -44,8 +44,8 @@ userRouter.post(
 
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.USER_LOGGEDIN(result));
   
-    } catch(error){
-      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
+    } catch(error: any){
+      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
     }
   } 
 );
@@ -63,8 +63,8 @@ userRouter.post(
         res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.USER_VALIDATED({isValid: false}));
       }
   
-    } catch(error){
-      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
+    } catch(error: any){
+      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
     }
   } 
 );
@@ -76,8 +76,8 @@ userRouter.get(
     try{
       const result = await userController.getUserInfo(req.params['id']);
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.USER_INFO(result));
-    } catch(error){
-      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
+    } catch(error: any){
+      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
     }
   }
 );
@@ -93,34 +93,34 @@ userRouter.get(
       const result = await userController.getFriendList(req.params['id'], page as number, limit as number);
 
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.USER_FRIEND_LIST(result));
-    } catch(error){
-      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
+    } catch(error: any){
+      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
     }
   }
 );
 
 userRouter.post(
-  ":/id/:friendId", 
+  "/friend/:friendId", 
   userMiddleware.authenticate,
   async  function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
     try{
-      const result = await userController.updateFriend(req.params['id'], req.params['friendId'], true);
-      res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.FRIEND_ADDED_SUCCESSFULLY);
-    } catch(error){
-      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
+      const result = await userController.updateFriend(req.user as string, req.params['friendId'], true);
+      res.status(HTTP_STATUS_CODE.OK).send(result);
+    } catch(error: any){
+      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
     }
   }
 );
 
 userRouter.delete(
-  ":/id/:friendId", 
+  "/friend/:friendId", 
   userMiddleware.authenticate,
   async  function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
     try{
-      const result = await userController.updateFriend(req.params['id'], req.params['friendId'], false);
+      const result = await userController.updateFriend(req.user as string, req.params['friendId'], false);
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.FRIEND_REMOVED_SUCCESSFULLY);
-    } catch(error){
-      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
+    } catch(error: any){
+      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
     }
   }
 );

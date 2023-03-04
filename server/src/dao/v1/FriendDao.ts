@@ -13,6 +13,21 @@ class FriendDao {
           },
         },
         {
+          $lookup: {
+            from: 'users',
+            localField: 'friend',
+            foreignField: '_id',
+            as: 'friend'
+          }
+        },
+        {
+          $addFields: {
+            friend: {
+                "$arrayElemAt": ["$friend", -1]
+            }
+          }
+        },
+        {
           $sort: {
             createdAt: -1,
           },
@@ -45,9 +60,9 @@ class FriendDao {
     }
   }
 
-  save(userId: mongoose.Types.ObjectId, friendId: mongoose.Types.ObjectId){
+  save(userId: mongoose.Types.ObjectId, friend: mongoose.Types.ObjectId){
     try{
-
+      return FriendModel.create({userId, friend});
     } catch(error){
       throw error;
     }
@@ -55,7 +70,7 @@ class FriendDao {
 
   delete(userId: mongoose.Types.ObjectId, friendId: mongoose.Types.ObjectId){
     try{
-
+      return FriendModel.deleteMany({userId: userId, friend: friendId});
     } catch(error){
       throw error;
     }

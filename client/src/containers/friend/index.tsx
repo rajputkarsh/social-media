@@ -7,6 +7,7 @@ import FlexContainer from "../flexContainer";
 import ProfilePicture from "../../components/profilePicture";
 import { CustomTheme, ReduxState } from "../../interfaces";
 import { useState } from "react";
+import { URL } from "../../constants";
 
 interface FriendInfo {
   friendId: string,
@@ -19,6 +20,7 @@ const Friend = ({ friendId, name, subtitle, profilePicture }: FriendInfo) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userInfo = useSelector((state: ReduxState) => state.user);
+  const friends  = useSelector((state: ReduxState) => state.friends);
 
   const { palette }: { palette: CustomTheme } = useTheme();
   const primaryLight = palette.primary.light;
@@ -26,13 +28,24 @@ const Friend = ({ friendId, name, subtitle, profilePicture }: FriendInfo) => {
   const main = palette.neutral.main;
   const medium = palette.neutral.medium;
 
-  const isFriend = userInfo?.friends.find((friend: {[key: string]: any}) => friend._id === friendId);
+  const isFriend = friends?.find((friend: {[key: string]: any}) => friend.friend._id === friendId);
 
   const patchFriend = async () => {
+
+    let url = '', method = '';
+
+    if(isFriend){
+      url = URL.REMOVE_FRIEND(friendId);
+      method = 'DELETE';
+    } else{
+      url = URL.ADD_FRIEND(friendId);
+      method = 'POST';
+    }
+
     const response = await fetch(
-      `http://localhost:3001/users/${userInfo?.userId}/${friendId}`,
+      url,
       {
-        method: "PATCH",
+        method: method,
         headers: {
           Authorization: `Bearer ${userInfo?.token}`,
           "Content-Type": "application/json",
@@ -40,7 +53,11 @@ const Friend = ({ friendId, name, subtitle, profilePicture }: FriendInfo) => {
       }
     );
     const data = await response.json();
-    dispatch(setFriends({ friends: data }));
+
+    // update friends list inside state
+    const friendList = useSelector((state: ReduxState) => state.friends)?.filter(friend => friend?._id !== friendId);
+    dispatch(setFriends({ friends: friendList }));
+    
   };
 
   return (
@@ -59,7 +76,6 @@ const Friend = ({ friendId, name, subtitle, profilePicture }: FriendInfo) => {
             fontWeight="500"
             sx={{
               "&:hover": {
-                color: palette.primary.light,
                 cursor: "pointer",
               },
             }}

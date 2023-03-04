@@ -13,7 +13,8 @@ export default {
 
   // friend related
   LIST_FRIENDS: (userId: string) => `${import.meta.env.VITE_API_BASE_URL}/user/${userId}/friends`,
-
+  ADD_FRIEND: (friendId: string) => `${import.meta.env.VITE_API_BASE_URL}/user/friend/${friendId}`,
+  REMOVE_FRIEND: (friendId: string) => `${import.meta.env.VITE_API_BASE_URL}/user/friend/${friendId}`,
 
   // upload
   UPLOAD_MEDIA: () => `${import.meta.env.VITE_API_BASE_URL}/upload`
