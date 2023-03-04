@@ -20,8 +20,8 @@ postRouter.post(
       }, req.user as string);
   
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.POSTED_SUCCESSFULLY(result));
-    } catch(error){
-      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
+    } catch(error: any){
+      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
     }
   }
 );
@@ -37,8 +37,8 @@ postRouter.get(
       const result = await postController.list({}, page as number, limit as number);
 
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.POSTS_FETCHED_SUCCESSFULLY(result));
-    } catch(error){
-      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
+    } catch(error: any){
+      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
     }
   }
 );
@@ -54,8 +54,8 @@ postRouter.get(
 
       const result = await postController.getPostsByUserId(userId, page as number, limit as number);
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.POSTS_FETCHED_SUCCESSFULLY(result));
-    } catch(error){
-      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
+    } catch(error: any){
+      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
     }
   }
 );
@@ -69,8 +69,8 @@ postRouter.get(
       const result = postController.getPostById(postId);
 
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.POSTS_FETCHED_SUCCESSFULLY(result));
-    } catch(error){
-      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
+    } catch(error: any){
+      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
     }
   }
 );
@@ -86,8 +86,8 @@ postRouter.patch(
 
       const result = postController.update(postId, postInfo);
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.POST_UPDATED_SUCCESSFULLY(result));
-    } catch(error){
-      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
+    } catch(error: any){
+      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
     }
   }
 );
@@ -101,8 +101,8 @@ postRouter.post(
       
       const result = postController.like(postId, req.user as string);
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.POST_LIKED_SUCCESSFULLY(result));
-    } catch(error){
-      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
+    } catch(error: any){
+      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
     }
   }
 );
@@ -116,8 +116,8 @@ postRouter.delete(
       
       const result = postController.unlike(postId, req.user as string);
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.POST_UNLIKED_SUCCESSFULLY(result));      
-    } catch(error){
-      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
+    } catch(error: any){
+      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
     }
   }
 );

@@ -109,17 +109,17 @@ class UserController {
     try{
       if(add){
         // add friend
-        let friends = await friendDao.list({userId: new mongoose.Types.ObjectId(userId), friend: new mongoose.Types.ObjectId()}, 1, 1);
+        let friends = await friendDao.list({userId: new mongoose.Types.ObjectId(userId), friend: new mongoose.Types.ObjectId(friendId)}, 1, 1);
         if(friends.count > 0) throw MESSAGES.ERROR.ALREADY_ADDED_FRIEND;
 
         await friendDao.save(new mongoose.Types.ObjectId(userId), new mongoose.Types.ObjectId(friendId));
         return MESSAGES.SUCCESS.FRIEND_ADDED_SUCCESSFULLY;
       } else{
         // delete friend
-        let friends = await friendDao.list({userId: new mongoose.Types.ObjectId(userId), friend: new mongoose.Types.ObjectId()}, 1, 1);
+        let friends = await friendDao.list({userId: new mongoose.Types.ObjectId(userId), friend: new mongoose.Types.ObjectId(friendId)}, 1, 1);
         if(friends.count == 0) throw MESSAGES.ERROR.FRIEND_DOES_NOT_EXIST;
 
-        friendDao.delete(new mongoose.Types.ObjectId(userId), new mongoose.Types.ObjectId(friendId));
+        await friendDao.delete(new mongoose.Types.ObjectId(userId), new mongoose.Types.ObjectId(friendId));
         return MESSAGES.SUCCESS.FRIEND_REMOVED_SUCCESSFULLY;
       }
     } catch(error){

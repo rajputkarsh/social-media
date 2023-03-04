@@ -40,6 +40,11 @@ export const authSlice = createSlice({
       });
       state.posts = updatedPosts;
     },
+
+    // reset state to initial
+    reset: (state: ReduxState) => {
+      Object.assign(state, initialState);
+    }
   },
 });
 

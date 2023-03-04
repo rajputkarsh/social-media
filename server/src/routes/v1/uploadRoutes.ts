@@ -13,8 +13,8 @@ userRouter.post(
     try{
       const result = await uploadController.upload(req.files);
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.FILE_UPLOADED_SUCCESSFULLY({url: result}));
-    } catch(error){
-      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
+    } catch(error: any){
+      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
     }
   } 
 )
