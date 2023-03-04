@@ -6,7 +6,9 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
+
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -20,6 +22,7 @@ import { toast } from "react-toastify";
 const Login = () => {
 
   const userInfo = useSelector((state: ReduxState) => state.user);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // validate if a legit user is already logged in
   useEffect(() => {
@@ -85,7 +88,14 @@ const Login = () => {
       })
     );
 
-    navigate("/");
+    // check if there is a redirect url before redirecting
+    const redirectUrl: string | null = searchParams.get('redirect');
+    if(redirectUrl){
+      navigate(redirectUrl);
+    } else{
+      navigate("/");
+    }
+
   };
 
   const handleFormSubmit = async (values: typeof initialLoginValues) => {

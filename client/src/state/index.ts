@@ -26,8 +26,6 @@ export const authSlice = createSlice({
     setFriends: (state: ReduxState, action) => {
       if (state.friends) {
         state.friends = action.payload.friends;
-      } else {
-        console.error("user friends non-existent :(");
       }
     },
     setPosts: (state: ReduxState, action) => {
