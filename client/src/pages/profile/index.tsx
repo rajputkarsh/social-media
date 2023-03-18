@@ -42,7 +42,7 @@ const Profile = () => {
         justifyContent="center"
       >
         <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
-          <UserInfo userId={userId || ""} profilePicture={user?.profilePicture || ""} />
+          <UserInfo/>
           <Box m="2rem 0" />
           <FriendList userId={userId || ""} />
         </Box>

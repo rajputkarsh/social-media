@@ -98,8 +98,7 @@ postRouter.post(
   async  function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
     try{
       const postId   = req.params['id'];
-      
-      const result = postController.like(postId, req.user as string);
+      const result = await postController.like(postId, req.user as string);
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.POST_LIKED_SUCCESSFULLY(result));
     } catch(error: any){
       res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
@@ -116,6 +115,36 @@ postRouter.delete(
       
       const result = postController.unlike(postId, req.user as string);
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.POST_UNLIKED_SUCCESSFULLY(result));      
+    } catch(error: any){
+      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
+    }
+  }
+);
+
+postRouter.post(
+  "/:id/comment",
+  postValidator.addComment,
+  userMiddleware.authenticate,
+  async  function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
+    try{
+      const postId  = req.params['id'];
+      const comment: string = req.body.comment;
+      const result = await postController.addComment(postId, req.user as string, comment);
+      res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.COMMENT_ADDED_SUCCESSFULLY(result));
+    } catch(error: any){
+      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
+    }
+  }
+);
+
+postRouter.delete(
+  "/:id/comment/:commentId",
+  userMiddleware.authenticate,
+  async  function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
+    try{
+      const commentId   = req.params['commentId'];
+      await postController.deleteComment(commentId);
+      res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.COMMENT_DELETED_SUCCESSFULLY({}));
     } catch(error: any){
       res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
     }

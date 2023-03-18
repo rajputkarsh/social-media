@@ -60,7 +60,7 @@ class VoteDao{
 
   deleteByQuery(query: Object){
     try{
-      return VoteModel.findByIdAndUpdate(query);
+      return VoteModel.deleteMany(query);
     } catch(error){
       throw error;
     }

@@ -32,15 +32,37 @@ class PostDao{
         },
         {
           $lookup: {
-            from: 'comment',
+            from: 'comments',
             localField: '_id',
             foreignField: 'postId',
-            as: 'comments'
+            as: 'comments',
+            pipeline: [
+              {
+                $match: {
+                  status: CONSTANTS.STATUS.ACTIVE
+                }
+              },
+              {
+                $lookup: {
+                  from: 'users',
+                  localField: 'userId',
+                  foreignField: '_id',
+                  as: 'user'
+                }
+              },
+              {
+                $addFields: {
+                  user: {
+                      "$arrayElemAt": ["$user", -1]
+                  }
+                }
+              },
+            ]
           }
         },
         {
           $lookup: {
-            from: 'vote',
+            from: 'votes',
             localField: '_id',
             foreignField: 'ref',
             as: 'votes'
@@ -92,6 +114,29 @@ class PostDao{
   delete(id: mongoose.Types.ObjectId){
     try{
       return PostModel.findByIdAndUpdate(id, {status: CONSTANTS.STATUS.DELETED});
+    } catch(error){
+      throw error;
+    }
+  }
+
+  search(term: string){
+    try{
+      return PostModel.aggregate([
+        {
+          $match: {
+            $or: [
+              {
+                text: { $regex: `/${term}/`, $options: 'i' }
+              },              
+            ]
+          }
+        },
+        {
+          $addFields: {
+            type: 'POST'
+          }
+        }
+      ])
     } catch(error){
       throw error;
     }

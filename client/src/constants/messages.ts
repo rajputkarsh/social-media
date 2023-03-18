@@ -5,6 +5,7 @@ export default {
   },
 
   SUCCESS: {
-    POSTED_SUCCESSFULLY: `Post uploaded successfully`
+    POSTED_SUCCESSFULLY: `Post uploaded successfully`,
+    COMMENTED_SUCCESSFULLY: `Comment saved successfully`,
   },
 }

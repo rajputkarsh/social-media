@@ -1,7 +1,7 @@
 
 export default {
 
-  APP_NAME: 'SocioMedia',
+  APP_NAME: 'Social Media App',
 
   LOGIN: {
     HEADING: 'Login',

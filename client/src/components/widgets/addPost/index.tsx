@@ -32,6 +32,7 @@ import { toast } from "react-toastify";
 const AddPost = () => {
 
   const dispatch = useDispatch();
+  const postList = useSelector((state: ReduxState) => state.posts);
   const [isFile, setIsFile] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [fileType, setFileType] = useState<string>("");
@@ -73,7 +74,7 @@ const AddPost = () => {
       return;
     }
 
-    dispatch(setPosts([ posts.data ]));
+    dispatch(setPosts({posts: [  ...posts.data?.data, ...postList ]}));
     setFile(null);
     setPost("");
 
@@ -198,8 +199,9 @@ const AddPost = () => {
         <Button
           disabled={!post}
           onClick={handlePost}
+          variant='outlined'
           sx={{
-            color: palette.background.alt,
+            color: `${palette.text.primary} !important`,
             backgroundColor: palette.primary.main,
             borderRadius: "3rem",
           }}

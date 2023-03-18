@@ -84,6 +84,38 @@ class UserDao {
     }
   }
 
+  search(term: string){
+    try{
+      return UserModel.aggregate([
+        {
+          $match: {
+            $or: [
+              {
+                firstName: { $regex: `/${term}/`, $options: 'i' }
+              },
+              {
+                lastName: { $regex: `/${term}/`, $options: 'i' }
+              },
+              {
+                userName: { $regex: `/${term}/`, $options: 'i' }
+              },
+              {
+                email: { $regex: `/${term}/`, $options: 'i' }
+              },
+            ],            
+          }
+        },
+        {
+          $addFields: {
+            type: 'USER'
+          }
+        }
+      ]);
+    } catch(error){
+      throw error;
+    }
+  }
+
 }
 
 export default new UserDao();

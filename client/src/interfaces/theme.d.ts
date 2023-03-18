@@ -11,6 +11,9 @@ interface CustomTheme extends Palette{
     mediumMain: string,
     medium    : string,
     light     : string,
+  },
+  text: {
+    primary: string;
   }
 }
 

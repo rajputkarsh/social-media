@@ -9,7 +9,11 @@ export default {
   // post related
   LIST_POST: () => `${import.meta.env.VITE_API_BASE_URL}/post`,
   ADD_POST : () => `${import.meta.env.VITE_API_BASE_URL}/post`,
+  LIKE_POST: (id: string) => `${import.meta.env.VITE_API_BASE_URL}/post/${id}/like`,
+  UNLIKE_POST: (id: string) => `${import.meta.env.VITE_API_BASE_URL}/post/${id}/like`,
   LIST_USER_POST: (userId: string) => `${import.meta.env.VITE_API_BASE_URL}/post/${userId}/posts`,
+  ADD_COMMENT: (id: string) => `${import.meta.env.VITE_API_BASE_URL}/post/${id}/comment`,
+  DELETE_POST: (postId: string, commentId: string) => `${import.meta.env.VITE_API_BASE_URL}/post/${postId}/comment/${commentId}`,
 
   // friend related
   LIST_FRIENDS: (userId: string) => `${import.meta.env.VITE_API_BASE_URL}/user/${userId}/friends`,

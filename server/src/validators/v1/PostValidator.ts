@@ -17,6 +17,15 @@ class PostValidator extends BaseValidator{
     this.validateBody(validationSchema, req, res, next);
   }
 
+  addComment = async (req: Request, res: Response, next: NextFunction) => {
+
+    const validationSchema = Joi.object({
+      comment: Joi.string().required(),
+    });
+    
+    this.validateBody(validationSchema, req, res, next);
+  }
+
   update = async (req: Request, res: Response, next: NextFunction) => {
 
     const validationSchema = Joi.object({

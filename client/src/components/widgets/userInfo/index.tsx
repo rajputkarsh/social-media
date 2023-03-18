@@ -1,6 +1,5 @@
 import {
   ManageAccountsOutlined,
-  EditOutlined,
   LocationOnOutlined,
   WorkOutlineOutlined,
 } from "@mui/icons-material";
@@ -9,46 +8,30 @@ import ProfilePicture from '../../profilePicture';
 import FlexContainer from "../../../containers/flexContainer";
 import WidgetContainer from "../../../containers/widgetContainer";
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CustomTheme, ReduxState, UserDetails } from "../../../interfaces";
-import { URL } from "../../../constants";
+import { CustomTheme, ReduxState } from "../../../interfaces";
 
-const UserInfo = ({ userId, profilePicture }: {userId: string, profilePicture: string}) => {
-  const [user, setUser] = useState(null);
+const UserInfo = () => {
+  const user = useSelector((state: ReduxState) => state.user);
+  const friends = useSelector((state: ReduxState) => state.friends);
   const { palette }: {palette: CustomTheme} = useTheme();
   const navigate = useNavigate();
-  const token = useSelector((state: ReduxState) => state?.user?.token);
   const dark = palette.neutral.dark;
   const medium = palette.neutral.medium;
   const main = palette.neutral.main;
 
-  const getUser = async () => {
-    const response = await fetch(URL.USER_INFO(userId), {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const result = await response.json();
-    setUser(result?.data?.data[0]);
-  };
-
-  useEffect(() => {
-    getUser();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  if (!user) {
-    return null;
-  }
+  if (!user) return <></>;
 
   const {
+    userId,
+    profilePicture,
     firstName,
     lastName,
     location,
-    occupation,
-    friends,
-    profileViews,
-    currentLevel,
-  }: UserDetails = user;
+    occupation
+  } = user;
+
+  const profileViews=0, currentLevel = 0;
 
   return (
     <WidgetContainer>

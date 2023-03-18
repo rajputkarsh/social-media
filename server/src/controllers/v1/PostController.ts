@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { CONSTANTS, MESSAGES } from "../../constants";
-import { postDao, voteDao } from "../../dao";
+import { commentDao, postDao, voteDao } from "../../dao";
 import { IPost } from "../../interfaces";
 
 class PostController {
@@ -31,7 +31,8 @@ class PostController {
   
   async add(post: IPost, userId: string) {
     try {
-      return await postDao.save({...post, postedBy: new mongoose.Types.ObjectId(userId)});
+      const newPost = await postDao.save({...post, postedBy: new mongoose.Types.ObjectId(userId)});
+      return await postDao.list({_id: newPost._id}, 1, 1);
     } catch (error) {
       throw error;
     }
@@ -109,6 +110,28 @@ class PostController {
 
       return result;
     } catch (error) {
+      throw error;
+    }
+  }
+
+  async addComment(postId: string, userId: string, text: string){
+    try{
+      const result = await commentDao.save({
+        postId: new mongoose.Types.ObjectId(postId),
+        userId: new mongoose.Types.ObjectId(userId),
+        text: text,
+      }); 
+      return result;
+    } catch(error){
+      throw error;
+    }
+  }
+
+  async deleteComment(commentId: string){
+    try{
+      const result = await commentDao.delete(new mongoose.Types.ObjectId(commentId)); 
+      return result;
+    } catch(error){
       throw error;
     }
   }

@@ -27,6 +27,7 @@ const Friend = ({ friendId, name, subtitle, profilePicture }: FriendInfo) => {
   const primaryDark = palette.primary.dark;
   const main = palette.neutral.main;
   const medium = palette.neutral.medium;
+  const text = palette.text.primary;
 
   const isFriend = friends?.find((friend: {[key: string]: any}) => friend.friend._id === friendId);
 
@@ -55,8 +56,21 @@ const Friend = ({ friendId, name, subtitle, profilePicture }: FriendInfo) => {
     const data = await response.json();
 
     // update friends list inside state
-    const friendList = useSelector((state: ReduxState) => state.friends)?.filter(friend => friend?._id !== friendId);
-    dispatch(setFriends({ friends: friendList }));
+    let friendList;
+    if (isFriend) {
+      friendList= friends?.filter(friend => friend?.friend?._id !== friendId);
+      dispatch(setFriends({ friends: friendList }));
+    } else{
+        const response = await fetch(
+          URL.LIST_FRIENDS(userInfo?.userId),
+          {
+            method: "GET",
+            headers: { Authorization: `Bearer ${userInfo?.token}` },
+          }
+        );
+        const data = await response.json();
+        dispatch(setFriends({ friends: data.data?.data }));
+    }
     
   };
 
@@ -89,12 +103,12 @@ const Friend = ({ friendId, name, subtitle, profilePicture }: FriendInfo) => {
       </FlexContainer>
       <IconButton
         onClick={() => patchFriend()}
-        sx={{ backgroundColor: primaryLight, p: "0.6rem" }}
+        sx={{ backgroundColor: primaryLight, color: text, p: "0.6rem" }}
       >
         {isFriend ? (
-          <PersonRemoveOutlined sx={{ color: primaryDark }} />
+          <PersonRemoveOutlined sx={{ color: text }} />
         ) : (
-          <PersonAddOutlined sx={{ color: primaryDark }} />
+          <PersonAddOutlined sx={{ color: text }} />
         )}
       </IconButton>
     </FlexContainer>

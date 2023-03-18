@@ -20,8 +20,7 @@ export const authSlice = createSlice({
       state.user =action.payload
     },
     setLogout: (state) => {
-      state.user = null;
-      state.token = null;
+      Object.assign(state, {...initialState, mode: state.mode});
     },
     setFriends: (state: ReduxState, action) => {
       if (state.friends) {
@@ -37,11 +36,6 @@ export const authSlice = createSlice({
         return post;
       });
       state.posts = updatedPosts;
-    },
-
-    // reset state to initial
-    reset: (state: ReduxState) => {
-      Object.assign(state, initialState);
     }
   },
 });

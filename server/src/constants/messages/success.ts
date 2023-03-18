@@ -94,4 +94,26 @@ export default {
     message: 'Post unliked successfully',
     data   : data,
   }),
+
+  COMMENT_ADDED_SUCCESSFULLY: (data: Object) => ({
+    status : HTTP_STATUS_CODE.OK,
+    type   : 'COMMENT_ADDED_SUCCESSFULLY',
+    message: 'Comment added successfully',
+    data   : data,
+  }),
+
+  COMMENT_DELETED_SUCCESSFULLY: (data: Object) => ({
+    status : HTTP_STATUS_CODE.OK,
+    type   : 'COMMENT_DELETED_SUCCESSFULLY',
+    message: 'Comment deleted successfully',
+    data   : data,
+  }),
+
+  // Search related
+  SEARCH_RESULTS: (data: Object) => ({
+    status : HTTP_STATUS_CODE.OK,
+    type   : 'SEARCH_RESULTS',
+    message: 'Search results fetched successfully',
+    data   : data,
+  }),
 };
