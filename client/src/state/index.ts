@@ -4,6 +4,7 @@ import { ReduxState } from "../interfaces";
 const initialState: ReduxState = {
   mode: "light",
   user: null,
+  userProfile: null,
   token: null,
   posts: [],
   friends: [],
@@ -18,6 +19,9 @@ export const authSlice = createSlice({
     },
     setLogin: (state, action) => {
       state.user =action.payload
+    },
+    setUserProfile: (state, action) => {
+      state.userProfile =action.payload
     },
     setLogout: (state) => {
       Object.assign(state, {...initialState, mode: state.mode});
@@ -40,6 +44,6 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost } = authSlice.actions;
+export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost, setUserProfile } = authSlice.actions;
 
 export default authSlice.reducer;

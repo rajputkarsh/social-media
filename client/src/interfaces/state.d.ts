@@ -5,4 +5,5 @@ export default interface ReduxState {
   token: string | null,
   posts: Array<{[key: string]: any}>,
   friends: Array<{[key: string]: any}>,
+  userProfile: {[key: string]: any} | null,
 };S

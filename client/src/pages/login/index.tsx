@@ -7,7 +7,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { useFormik } from "formik";
@@ -26,7 +26,7 @@ const Login = () => {
 
   // validate if a legit user is already logged in
   useEffect(() => {
-    if(userInfo && Object.keys(userInfo).length > 0 && userInfo?.token ){
+    if(userInfo && Object.keys(userInfo).length > 0 && userInfo?.token && !searchParams.get('redirect')){
       fetch(
         URL.VALIDATE_TOKEN(),
         {

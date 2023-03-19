@@ -1,4 +1,4 @@
-
+import { useLocation } from "react-router-dom";
 import { Button, InputBase, useTheme } from '@mui/material';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,6 +11,7 @@ import { setPosts } from '../../../state';
 function AddComment({postId}: {postId: string}) {
 
   const dispatch = useDispatch();
+  const location = useLocation();
   const userInfo = useSelector((state: ReduxState) => state.user);
   const token = useSelector((state: ReduxState) => state.user?.token);
   const { palette } : { palette: CustomTheme } = useTheme();
@@ -34,8 +35,14 @@ function AddComment({postId}: {postId: string}) {
       return;
     }
 
+    let responseUrl = URL.LIST_POST();
+    if(location.pathname.includes('profile')){
+      const urlParts = location.pathname.split('/');
+      responseUrl = URL.LIST_USER_POST(urlParts[urlParts.length - 1]);
+    }
+    
     const postData = await fetch(
-      URL.LIST_POST(),
+      responseUrl,
       {
         method: "GET",
         headers: {authorization: `Bearer ${token}`},

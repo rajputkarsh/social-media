@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   ManageAccountsOutlined,
   LocationOnOutlined,
@@ -7,16 +8,22 @@ import { Box, Typography, Divider, useTheme } from "@mui/material";
 import ProfilePicture from '../../profilePicture';
 import FlexContainer from "../../../containers/flexContainer";
 import WidgetContainer from "../../../containers/widgetContainer";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { CustomTheme, ReduxState } from "../../../interfaces";
 import { URL } from "../../../constants";
+import { setUserProfile } from "../../../state";
 
 const UserInfo = ({userId}: {userId: string}) => {
+
+  const [user, setUser] = useState<null | {[key: string]: any}>(null);
+
   const token    = useSelector((state: ReduxState) => state.user?.token);
   const userInfo = useSelector((state: ReduxState) => state.user);
+  const userProfileInfo = useSelector((state: ReduxState) => state.userProfile);
   const friends  = useSelector((state: ReduxState) => state.friends);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   
   const { palette }: {palette: CustomTheme} = useTheme();
   
@@ -24,15 +31,30 @@ const UserInfo = ({userId}: {userId: string}) => {
   const medium = palette.neutral.medium;
   const main = palette.neutral.main;
 
-  let user;
-  if(userInfo?.userId == userId){
-    user = userInfo;
-  } else{
-    // const userData = await fetch(URL.USER_INFO(userId),{
-    //   method: 'GET',
-    //   headers: { Authorization: `Bearer ${token}` },
-    // })
+  const getUserInfo = async () => {
+    const userData = await fetch(URL.USER_INFO(userId), {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${userInfo?.token}` },
+    });
+    const data = await userData.json();
+    
+    if(data.status !== 200 ) return null;
+
+    dispatch(setUserProfile(data?.data?.data[0]));
+    return true;
   }
+
+  useEffect(() => {
+    if(userInfo?.userId !== userId) {
+      getUserInfo().then((data) => {
+        setUser((_prev) => userProfileInfo);
+      });
+    } else{
+      setUser((_prev) => userInfo);
+    }
+
+  }, []);
+
 
   if (!user) return <></>;
 

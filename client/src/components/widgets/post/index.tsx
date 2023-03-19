@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import {
   ChatBubbleOutlineOutlined,
   FavoriteBorderOutlined,
@@ -28,6 +29,7 @@ interface IPost {
 const Post = ({ postId, postUser, text, media, votes, comments }: IPost) => {
   const [isComments, setIsComments] = useState(false);
   const dispatch = useDispatch();
+  const location = useLocation();
   const loggedInUser = useSelector((state: ReduxState) => state?.user);
   const token = useSelector((state: ReduxState) => state?.user?.token);
 
@@ -35,7 +37,6 @@ const Post = ({ postId, postUser, text, media, votes, comments }: IPost) => {
     (vote: { [key: string]: any }) =>
       vote.type === SETTINGS.COMMON.VOTE_TYPE.UPVOTE
   );
-  // const downvotes = votes.filter((vote: {[key: string]: any}) => vote.type ===  SETTINGS.COMMON.VOTE_TYPE.DOWNVOTE);
 
   const isLiked =
     upvotes.filter(
@@ -56,8 +57,14 @@ const Post = ({ postId, postUser, text, media, votes, comments }: IPost) => {
       body: JSON.stringify({ userId: loggedInUser?.userId }),
     });
 
+    let responseUrl = URL.LIST_POST();
+    if(location.pathname.includes('profile')){
+      const urlParts = location.pathname.split('/');
+      responseUrl = URL.LIST_USER_POST(urlParts[urlParts.length - 1]);
+    }
+
     const response = await fetch(
-      URL.LIST_POST(),
+      responseUrl,
       {
         method: "GET",
         headers: {authorization: `Bearer ${token}`},
@@ -81,11 +88,9 @@ const Post = ({ postId, postUser, text, media, votes, comments }: IPost) => {
         subtitle={postUser?.location}
         profilePicture={postUser?.profilePicture || ""}
       />
-      <Typography color={main} sx={{ mt: "1rem" }}>
         <pre style={{ fontFamily: 'inherit' }}>
           {text}
         </pre>
-      </Typography>
       {media && (
         <img
           width="100%"
