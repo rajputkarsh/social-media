@@ -14,7 +14,7 @@ function SearchBar() {
   const [options, setOptions] = useState<Array<SearchOptions>>([SETTINGS.DEFAULT_SEARCH_OPTION]);
   const token = useSelector((state: ReduxState) => state.user?.token);
   const navigate = useNavigate();
-  let previousController = useRef(null);
+  let previousController = useRef(new AbortController());
 
   const { palette } : { palette: CustomTheme } = useTheme();
   const neutralLight = palette.neutral.light;
