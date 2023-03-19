@@ -9,7 +9,11 @@ import { connectToDatabase } from './src/utils/database';
 import router from './src/routes';
 import { HTTP_STATUS_CODE, MESSAGES } from './src/constants';
 
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+if(process.env.NODE_ENV == 'dev'){
+  dotenv.config({ path: `.env` });
+} else{
+  dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+}
 
 const app = express();
 
