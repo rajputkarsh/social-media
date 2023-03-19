@@ -9,7 +9,6 @@ import Post from "../post";
 
 const PostList = ({userId="", isProfile = false }) => {
   const dispatch = useDispatch();
-
   const userInfo = useSelector((state: ReduxState) => state.user);
   const posts = useSelector(((state: ReduxState) => state.posts) || []);
 
@@ -42,6 +41,7 @@ const PostList = ({userId="", isProfile = false }) => {
       );
       
       const data = await response.json();
+      console.log(data);
       if(data.status !== 200){
         throw data.message;
       }
@@ -62,6 +62,11 @@ const PostList = ({userId="", isProfile = false }) => {
 
   return (
     <>
+      {
+        (!posts.length) && (
+          <p>This user hasn't posted anything</p>
+        )
+      }
       {posts.map(
         ({
           _id,

@@ -11,25 +11,9 @@ import { ReduxState } from "../../interfaces";
 import { URL } from "../../constants";
 
 const Profile = () => {
-  const [user, setUser] = useState<{[key: string]: any} | null>(null);
   const { userId } = useParams();
   const userInfo = useSelector((state: ReduxState) => state.user);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
-
-  const getUser = async () => {
-    const response = await fetch(URL.USER_INFO(userId || ""), {
-      method: "GET",
-      headers: { Authorization: `Bearer ${userInfo?.token}` },
-    });
-    const data = await response.json();
-    setUser(data);
-  };
-
-  useEffect(() => {
-    getUser();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  if (!user) return null;
 
   return (
     <Box>
@@ -42,9 +26,9 @@ const Profile = () => {
         justifyContent="center"
       >
         <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
-          <UserInfo/>
+          <UserInfo userId={userId || userInfo?.userId}/>
           <Box m="2rem 0" />
-          <FriendList userId={userId || ""} />
+          <FriendList userId={userId || userInfo?.userId} />
         </Box>
         <Box
           flexBasis={isNonMobileScreens ? "42%" : undefined}

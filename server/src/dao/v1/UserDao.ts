@@ -91,16 +91,16 @@ class UserDao {
           $match: {
             $or: [
               {
-                firstName: { $regex: `/${term}/`, $options: 'i' }
+                firstName: { $regex: `${term}`, $options: 'i' }
               },
               {
-                lastName: { $regex: `/${term}/`, $options: 'i' }
+                lastName: { $regex: `${term}`, $options: 'i' }
               },
               {
-                userName: { $regex: `/${term}/`, $options: 'i' }
+                userName: { $regex: `${term}`, $options: 'i' }
               },
               {
-                email: { $regex: `/${term}/`, $options: 'i' }
+                email: { $regex: `${term}`, $options: 'i' }
               },
             ],            
           }

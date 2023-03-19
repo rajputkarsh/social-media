@@ -11,7 +11,6 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import {
-  Search,
   Message,
   DarkMode,
   LightMode,
@@ -26,6 +25,7 @@ import { useNavigate } from "react-router-dom";
 import FlexContainer from "../../containers/flexContainer";
 import { CustomTheme, ReduxState } from "../../interfaces";
 import { SETTINGS } from "../../constants";
+import SearchBar from "../widgets/searchBar";
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
@@ -66,20 +66,8 @@ const Navbar = () => {
       </FlexContainer>
 
       {isNonMobileScreens && (
-          <FlexContainer
-            sx={{
-              backgroundColor: { neutralLight },
-              borderRadius: "9px",
-              gap: "0rem",
-              padding: "0.1rem 1.5rem",
-            }}
-          >
-            <InputBase sx={{width:'25rem'}} placeholder="Search..." />
-            <IconButton>
-              <Search />
-            </IconButton>
-          </FlexContainer>
-        )}
+        <SearchBar />
+      )}
 
       {/* DESKTOP NAV */}
       {isNonMobileScreens ? (

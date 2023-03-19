@@ -18,4 +18,10 @@ export default {
     },
   },
 
+  DEFAULT_SEARCH_OPTION: {
+    label: 'Please enter atleast three characters to search',
+    type: '',
+    id: '-1',
+  }
+
 }

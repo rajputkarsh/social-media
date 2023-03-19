@@ -5,10 +5,10 @@ class SearchController{
     try{
       const result = await Promise.allSettled([
         userDao.search(term),
-        postDao.search(term),
+        // postDao.search(term),
       ]);
 
-      return result;
+      return result.filter(({ status }) => status === 'fulfilled').map((p) => (p as any).value).flat();
     } catch(error){
       throw error;
     }

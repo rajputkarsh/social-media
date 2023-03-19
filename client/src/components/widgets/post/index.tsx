@@ -2,9 +2,8 @@ import {
   ChatBubbleOutlineOutlined,
   FavoriteBorderOutlined,
   FavoriteOutlined,
-  ShareOutlined,
 } from "@mui/icons-material";
-import { Box, Divider, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import FlexContainer from "../../../containers/flexContainer";
 import Friend from "../../../containers/friend";
 import WidgetContainer from "../../../containers/widgetContainer";
@@ -83,7 +82,9 @@ const Post = ({ postId, postUser, text, media, votes, comments }: IPost) => {
         profilePicture={postUser?.profilePicture || ""}
       />
       <Typography color={main} sx={{ mt: "1rem" }}>
-        {text}
+        <pre style={{ fontFamily: 'inherit' }}>
+          {text}
+        </pre>
       </Typography>
       {media && (
         <img

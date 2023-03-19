@@ -10,20 +10,33 @@ import WidgetContainer from "../../../containers/widgetContainer";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { CustomTheme, ReduxState } from "../../../interfaces";
+import { URL } from "../../../constants";
 
-const UserInfo = () => {
-  const user = useSelector((state: ReduxState) => state.user);
-  const friends = useSelector((state: ReduxState) => state.friends);
-  const { palette }: {palette: CustomTheme} = useTheme();
+const UserInfo = ({userId}: {userId: string}) => {
+  const token    = useSelector((state: ReduxState) => state.user?.token);
+  const userInfo = useSelector((state: ReduxState) => state.user);
+  const friends  = useSelector((state: ReduxState) => state.friends);
   const navigate = useNavigate();
+  
+  const { palette }: {palette: CustomTheme} = useTheme();
+  
   const dark = palette.neutral.dark;
   const medium = palette.neutral.medium;
   const main = palette.neutral.main;
 
+  let user;
+  if(userInfo?.userId == userId){
+    user = userInfo;
+  } else{
+    // const userData = await fetch(URL.USER_INFO(userId),{
+    //   method: 'GET',
+    //   headers: { Authorization: `Bearer ${token}` },
+    // })
+  }
+
   if (!user) return <></>;
 
   const {
-    userId,
     profilePicture,
     firstName,
     lastName,

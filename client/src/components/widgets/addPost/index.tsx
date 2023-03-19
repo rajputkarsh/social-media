@@ -89,6 +89,7 @@ const AddPost = () => {
           placeholder="What's on your mind..."
           onChange={(e) => setPost(e.target.value)}
           value={post}
+          multiline={true}
           sx={{
             width: "100%",
             backgroundColor: palette.neutral.light,

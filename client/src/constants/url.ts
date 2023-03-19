@@ -21,5 +21,8 @@ export default {
   REMOVE_FRIEND: (friendId: string) => `${import.meta.env.VITE_API_BASE_URL}/user/friend/${friendId}`,
 
   // upload
-  UPLOAD_MEDIA: () => `${import.meta.env.VITE_API_BASE_URL}/upload`
+  UPLOAD_MEDIA: () => `${import.meta.env.VITE_API_BASE_URL}/upload`,
+
+  // search
+  SEARCH_TERM: (term: string) => `${import.meta.env.VITE_API_BASE_URL}/search/${term}`,
 };

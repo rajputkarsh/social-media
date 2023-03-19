@@ -24,7 +24,6 @@ const Friend = ({ friendId, name, subtitle, profilePicture }: FriendInfo) => {
 
   const { palette }: { palette: CustomTheme } = useTheme();
   const primaryLight = palette.primary.light;
-  const primaryDark = palette.primary.dark;
   const main = palette.neutral.main;
   const medium = palette.neutral.medium;
   const text = palette.text.primary;
@@ -101,16 +100,20 @@ const Friend = ({ friendId, name, subtitle, profilePicture }: FriendInfo) => {
           </Typography>
         </Box>
       </FlexContainer>
-      <IconButton
-        onClick={() => patchFriend()}
-        sx={{ backgroundColor: primaryLight, color: text, p: "0.6rem" }}
-      >
-        {isFriend ? (
-          <PersonRemoveOutlined sx={{ color: text }} />
-        ) : (
-          <PersonAddOutlined sx={{ color: text }} />
-        )}
-      </IconButton>
+      {
+        (userInfo?.userId !== friendId) && (
+          <IconButton
+            onClick={() => patchFriend()}
+            sx={{ backgroundColor: primaryLight, color: text, p: "0.6rem" }}
+          >
+            {isFriend ? (
+              <PersonRemoveOutlined sx={{ color: text }} />
+            ) : (
+              <PersonAddOutlined sx={{ color: text }} />
+            )}
+          </IconButton>
+        )
+      }
     </FlexContainer>
   );
 };
