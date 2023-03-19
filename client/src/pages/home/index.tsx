@@ -23,7 +23,7 @@ const Home = () => {
         justifyContent="space-between"
       >
         <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
-          <UserInfo/>
+          <UserInfo userId={userInfo?.userId}/>
         </Box>
         <Box
           flexBasis={isNonMobileScreens ? "42%" : undefined}
