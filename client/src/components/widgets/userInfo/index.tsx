@@ -34,7 +34,7 @@ const UserInfo = ({userId}: {userId: string}) => {
   const getUserInfo = async () => {
     const userData = await fetch(URL.USER_INFO(userId), {
       method: 'GET',
-      headers: { Authorization: `Bearer ${userInfo?.token}` },
+      headers: { Authorization: `Bearer ${token}` },
     });
     const data = await userData.json();
     

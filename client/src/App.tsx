@@ -4,7 +4,8 @@ import Home from './pages/home';
 import Login from './pages/login';
 import Register from './pages/register';
 import Profile  from './pages/profile';
-import { useEffect, useMemo } from "react";
+import Messages from './pages/messages';
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { CssBaseline, PaletteMode, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
@@ -42,6 +43,14 @@ function App() {
             <Route
               path="/profile/:userId"
               element={isAuth ? <Profile /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/messages"
+              element={isAuth ? <Messages /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/messages/:friendId"
+              element={isAuth ? <Messages /> : <Navigate to="/login" />}
             />
           </Routes>
         </ThemeProvider>

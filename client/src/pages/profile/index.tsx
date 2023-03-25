@@ -8,7 +8,6 @@ import AddPost from "../../components/widgets/addPost";
 import PostList from "../../components/widgets/postList";
 import UserInfo from "../../components/widgets/userInfo";
 import { ReduxState } from "../../interfaces";
-import { URL } from "../../constants";
 
 const Profile = () => {
   const { userId } = useParams();
