@@ -34,7 +34,7 @@ function MessageList() {
     setTopOffset(divRef?.current?.offsetTop || 0);
     const friendIds = friends?.map((friend) => friend?._id)
 
-    const response = fetch(URL.)
+    // const response = fetch(URL.)
     
   }, []);
 
