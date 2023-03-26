@@ -7,6 +7,7 @@ import { useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { URL } from "../../constants";
+import ProfilePicture from "../profilePicture";
 
 function MessageList() {
   const navigate = useNavigate();
@@ -80,9 +81,12 @@ function MessageList() {
               }}
             >
               <FlexContainer>
-                <Typography color={dark} variant='h6' sx={{textTransform: 'capitalize'}}>
-                  {friend?.friend?.firstName + ' ' + friend?.friend?.lastName}
-                </Typography>
+                <FlexContainer gap={'0.2rem'} marginBottom={'0.2rem'}>
+                  <ProfilePicture image={friend?.friend?.profilePicture} size="25px" />
+                  <Typography color={dark} variant='h6' sx={{textTransform: 'capitalize'}}>
+                    {friend?.friend?.firstName + ' ' + friend?.friend?.lastName}
+                  </Typography>                  
+                </FlexContainer>
                 {lastMessage?.seen > 0 && (
                   <Badge
                     color='error'
