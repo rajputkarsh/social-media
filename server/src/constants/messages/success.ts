@@ -116,4 +116,12 @@ export default {
     message: 'Search results fetched successfully',
     data   : data,
   }),
+
+  // chat related
+  LAST_CHAT_MESSAGE: (data: Object) => ({
+    status : HTTP_STATUS_CODE.OK,
+    type   : 'LAST_CHAT_MESSAGE',
+    message: 'Last chat message fetched successfully',
+    data   : data,
+  }),
 };

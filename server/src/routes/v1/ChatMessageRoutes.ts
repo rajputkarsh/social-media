@@ -9,7 +9,7 @@ import { chatMessageController } from "../../controllers";
 const chatMessageRouter = Router();
 
 chatMessageRouter.get(
-  '/get-last-message/:friendId',
+  '/:friendId/get-last-message',
   userMiddleware.authenticate,
   async  function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
     try{
@@ -23,7 +23,7 @@ chatMessageRouter.get(
 
       const result = await chatMessageController.getLastMessage(userId, friendId);
 
-      res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.POSTED_SUCCESSFULLY(result));
+      res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.LAST_CHAT_MESSAGE(result));
     } catch(error: any){
       res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
     }

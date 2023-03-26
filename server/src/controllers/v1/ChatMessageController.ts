@@ -8,7 +8,7 @@ class ChatMessageController {
 
   async getLastMessage(userId: string, friendId: string){
     try{
-      const chatId: string = createChatId(userId, friendId);
+      const chatId: Array<string> = [createChatId(userId, friendId), createChatId(friendId, userId)];
       return await chatMessageDao.getLastChatMessage(chatId);
     } catch(error){
       throw error;

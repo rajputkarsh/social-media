@@ -30,8 +30,8 @@ const chatMessageSchema: Schema = new Schema<IChatMessages>({
   status: {
     type: String,
     required: false,
-    default: CONSTANTS.STATUS.ACTIVE,
-    enum: Object.values(CONSTANTS.STATUS),
+    default: CONSTANTS.CHAT_MESSAGE_STATUS.NOT_SEEN,
+    enum: Object.values(CONSTANTS.CHAT_MESSAGE_STATUS),
   },
 },
 {

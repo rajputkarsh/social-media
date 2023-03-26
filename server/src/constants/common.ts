@@ -9,6 +9,12 @@ const STATUS = {
   DELETED : 'DELETED',
 };
 
+const CHAT_MESSAGE_STATUS = {
+  SEEN     : 'SEEN',
+  NOT_SEEN : 'NOT_SEEN',
+  DELETED  : 'DELETED',
+}
+
 const DEFAULT_PAGE_NUMBER = 1;
 const DEFAULT_PAGE_SIZE   = 10;
 
@@ -27,6 +33,7 @@ export default {
   VOTE_TYPE,
   USER_TYPE,
   STATUS,
+  CHAT_MESSAGE_STATUS,
   DEFAULT_PAGE_NUMBER,
   DEFAULT_PAGE_SIZE,
 }

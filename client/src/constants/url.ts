@@ -25,4 +25,7 @@ export default {
 
   // search
   SEARCH_TERM: (term: string) => `${import.meta.env.VITE_API_BASE_URL}/search/${term}`,
+
+  // chat
+  GET_LAST_MESSAGE: (friendId: string) => `${import.meta.env.VITE_API_BASE_URL}/chat/${friendId}/get-last-message`,
 };

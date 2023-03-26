@@ -35,9 +35,9 @@ class ChatMessageDao{
     }
   }
 
-  getLastChatMessage(chatId: string){
+  getLastChatMessage(chatId: Array<string>){
     try{
-      return ChatMessageModel.find({chatId}).sort({createdAt: -1}).limit(1);
+      return ChatMessageModel.find({chatId: {$in: chatId}}).sort({createdAt: -1}).limit(1);
     } catch(error){
       throw error;
     }
