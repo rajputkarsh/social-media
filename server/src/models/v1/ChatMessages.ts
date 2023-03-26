@@ -42,6 +42,9 @@ const chatMessageSchema: Schema = new Schema<IChatMessages>({
 chatMessageSchema.set('toObject', {virtuals: true});
 chatMessageSchema.set('toJSON', {virtuals: true});
 
+chatMessageSchema.index({chatId: -1}, {unique:true});
+
+
 const ChatMessageModel = model<IChatMessages>('ChatMessage', chatMessageSchema);
 
 export default ChatMessageModel;
