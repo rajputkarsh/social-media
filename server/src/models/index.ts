@@ -1,4 +1,5 @@
 
+export {default as ChatMessageModel} from './v1/ChatMessages';
 export {default as CommentModel} from './v1/Comment';
 export {default as FriendModel} from './v1/Friend';
 export {default as ImpressionModel} from './v1/Impression';
