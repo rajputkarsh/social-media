@@ -8,6 +8,9 @@ import { Send } from "@mui/icons-material";
 import { CustomTheme, ReduxState } from "../../interfaces";
 import ProfilePicture from "../profilePicture";
 import * as moment from 'moment-timezone';
+import { URL } from "../../constants";
+import css from './messageBox.module.scss';
+import { toast } from "react-toastify";
 
 function MessageBox({ friendId }: {friendId: string | undefined | null}) {
   
@@ -30,25 +33,32 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
   let previouslyPressedKey: string = '';
   let previouslyPressedKeyTime: number = 0;
 
-  // const getLastChatMessage = (
-  //   userId: string
-  // ): { message: string; time: string; seen: boolean } => {
-  //   let lastMessage = lastMessages.filter((lastMessage) =>
-  //     lastMessage?.chatId?.includes(userId)
-  //   );
-  //   if (lastMessage.length > 1) lastMessage = lastMessage.sort((obj1, obj2) => new Date(obj2?.createdAt).getTime() - new Date(obj1?.createdAt).getTime()).splice(0, 1);
-  //   const hours = (moment().utc().diff(moment(lastMessage[0]?.createdAt)))/3600000;
-
-  //   return {
-  //     message: lastMessage[0]?.media ? "Media" : lastMessage[0]?.message,
-  //     time: Math.round(hours) > 0 ? `${Math.round(hours)}h ago` : `${Math.round(hours * 60)} mins ago`,
-  //     seen: userId == user?.userId || lastMessage[0]?.status == 'SEEN',
-  //   };
-  // };
+  const getLastChatMessageTime = (): string => {
+    if(messages.length < 1) return '';
+    const hours = (moment().utc().diff(moment(messages[0]?.createdAt)))/3600000;
+    return 'Last Message: ' + (Math.round(hours) > 0 ? `${Math.round(hours)}h ago` : `${Math.round(hours * 60)} mins ago`);
+  };
   
   useEffect(() => {
     setTopOffset(divRef?.current?.offsetTop || 0);
-  }, []);
+
+    if(friendId){
+      fetch(URL.LIST_ALL_MESSAGES(friendId), {
+  
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },      
+      }).then((response) => {
+        if(response.status == 200){
+          response.json().then((data) => {
+            setMessages(data.data?.data);
+          })
+        } else{
+          console.log('Something went wrong');
+        }
+      });
+    }
+
+  }, []); 
 
   useEffect(() => {
     if(Array.isArray(friends) && friends?.length > 0){
@@ -62,10 +72,34 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
 
   const handleSubmit = () => {
     if (inputRef?.current ){
-      const currentText = inputRef.current.value;
+      const currentText = inputRef.current.value?.trim();
       inputRef.current.value = '';
 
-      //TODO:  trigger send message API
+      const formData = new FormData();
+      formData.append('message', currentText);
+      formData.append('media', ''); // TODO: Add support to send media in chat
+      formData.append('receiver', friendId as string);
+
+      fetch(URL.SEND_MESSAGE(), {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      }).then((response) => {
+        if(response.status === 200){
+          response.json().then((data) => {
+            const newMessage = data.data as unknown as {[key: string]: any};
+            setMessages(
+              (prev) => {
+                const data = JSON.parse(JSON.stringify(prev))
+                data.unshift(newMessage);
+                return data;
+              });
+          });
+        } else{
+          toast.error('Something went wrong');
+        }
+      });
+
     }
   }
 
@@ -115,16 +149,32 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
           </Typography>
         </FlexContainer>   
         <FlexContainer gap='2rem'>
-          Last Message: X mins ago
+          {getLastChatMessageTime()}
         </FlexContainer>
       </FlexContainer>
 
       <Divider />
 
-      {/* messages here */}
-      <div>
-
-      </div>
+        {
+          !messages.length && (
+            <FlexContainer justifyContent={'center !important'} height={'100% !important'} alignItems={'center !important'}>
+              <Typography variant='h5'>
+                No Chat Found!
+              </Typography>            
+            </FlexContainer>
+          )
+        }
+        {
+          messages.length > 0 && (
+            messages.slice(0).reverse().map((message, index) => (
+              <FlexContainer key={`${friendId}_chat_${index}`} className={css.chatBox + " " + ((message?.sender == friendId )? css.friendMessage : css.userMessage)} >
+                <Typography variant='subtitle1' sx={{border: `1px solid ${medium}`}}>
+                  { message?.message }
+                </Typography>
+              </FlexContainer>
+            ))     
+          )
+        }
 
       <FlexContainer gap='1rem' marginTop='auto'>
         <InputBase

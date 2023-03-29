@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import Joi from "joi";
-import { MESSAGES } from "../../constants";
+import { HTTP_STATUS_CODE, MESSAGES } from "../../constants";
 
 class BaseValidator {
   constructor() {}
@@ -49,7 +49,7 @@ class BaseValidator {
       });
 
       if (errors) {
-        res.json(
+        res.status(HTTP_STATUS_CODE.BAD_REQUEST).json(
           MESSAGES.ERROR.BAD_REQUEST(
             errors.details.map((error) => error.message).join(", ")
           )
@@ -61,7 +61,7 @@ class BaseValidator {
 
       next();
     } catch (error) {
-      res.json({
+      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).json({
         status: MESSAGES.ERROR.INTERNAL_SERVER_ERROR(error as string),
         message: error,
       });

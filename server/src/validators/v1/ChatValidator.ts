@@ -10,8 +10,8 @@ class ChatValidator extends BaseValidator{
 
     const validationSchema = Joi.object({
       receiver : Joi.string().regex(REGEX.MONGODB_ID).required(),
-      message  : Joi.string().optional(),
-      media    : Joi.string().optional(),
+      message  : Joi.string().allow('').optional(),
+      media    : Joi.string().allow('').optional(),
     }).or('message', 'media');
     
     this.validateBody(validationSchema, req, res, next);

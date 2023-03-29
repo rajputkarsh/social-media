@@ -18,7 +18,9 @@ class ChatMessageDao{
         {
           $match: {
             ...query,
-            status: CONSTANTS.STATUS.ACTIVE
+            status: {
+              $nin: [CONSTANTS.CHAT_MESSAGE_STATUS.DELETED]
+            }
           },
         },
         {
