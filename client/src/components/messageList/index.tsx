@@ -55,12 +55,7 @@ function MessageList() {
       Promise.all(responses.map((res) => res.json())).then((lastMessages) => {
         const lastChatMessages = lastMessages.reduce(
           (messages, lastMessage) => {
-            if (
-              Array.isArray(lastMessage.data) &&
-              lastMessage.data?.length > 0
-            ) {
-              messages.push(lastMessage.data[0]);
-            }
+            if ( Array.isArray(lastMessage.data) && lastMessage.data?.length > 0) messages.push(lastMessage.data[0]);
             return messages;
           },
           []

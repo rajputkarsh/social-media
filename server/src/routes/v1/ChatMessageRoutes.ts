@@ -4,14 +4,35 @@ import { CONSTANTS, HTTP_STATUS_CODE, MESSAGES } from "../../constants";
 import { CustomRequest } from "../../interfaces/request";
 import { userMiddleware } from "../../middlewares";
 import { chatMessageController } from "../../controllers";
+import { chatValidator } from "../../validators";
 // import { chatMessageValidator } from "../../validators";
 
 const chatMessageRouter = Router();
 
+chatMessageRouter.post(
+  '/send',
+  userMiddleware.authenticate,
+  chatValidator.sendMessage,
+  async function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
+    try{
+      const message: string | undefined = req.body.message;
+      const media: string | undefined   = req.body.media;
+      const receiver: string = req.body.receiver;
+      const userId: string  = req.user as string;
+
+      const result = await chatMessageController.sendMessage({message, media}, receiver, userId);
+
+      res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.MESSAGE_SENT(result));
+    } catch(error: any){
+      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);  
+    }
+  }
+);
+
 chatMessageRouter.get(
   '/:friendId/get-last-message',
   userMiddleware.authenticate,
-  async  function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
+  async function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
     try{
 
       const userId   = req.user as string;

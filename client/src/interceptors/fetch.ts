@@ -8,7 +8,7 @@ export const fetchInterceptor = () => {
     let response = await originalFetch(resource, config);
   
     // handle unauthorised requests
-    if(response.status == 401){
+    if(response.status == 401 && !window.location.href.includes('redirect')){
       const location = window.location.href;
       window.location.replace(`${import.meta.env.VITE_BASE_URL}/login?redirect=${location}`)
     }
