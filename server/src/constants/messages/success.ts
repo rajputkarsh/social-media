@@ -118,6 +118,12 @@ export default {
   }),
 
   // chat related
+  MESSAGE_LIST: (data: Object) => ({
+    status : HTTP_STATUS_CODE.OK,
+    type   : 'MESSAGE_LIST',
+    message: 'Messages fetched successfully',
+    data   : data,
+  }),
   MESSAGE_SENT: (data: Object) => ({
     status : HTTP_STATUS_CODE.OK,
     type   : 'MESSAGE_SENT',

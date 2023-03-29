@@ -7,6 +7,24 @@ import { createChatId } from "../../utils/common";
 
 class ChatMessageController {
 
+  async listAll(friendId: string, userId: string, page: number | null, limit: number | null){
+    try{
+      const conditions = {
+        chatId: {
+          $in: [
+            createChatId(userId, friendId),
+            createChatId(friendId, userId),
+          ]
+        }
+      };
+
+      return await chatMessageDao.list(conditions, page, limit)
+
+    } catch(error){
+      throw error;
+    }
+  }
+
   async getLastMessage(userId: string, friendId: string){
     try{
       const chatId: Array<string> = [createChatId(userId, friendId), createChatId(friendId, userId)];
