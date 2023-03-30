@@ -19,21 +19,22 @@ export class WebSocket{
     );
 
     this._io.on('connection', (socket: Socket) => {
-      console.log('New User Connected\n');
+      console.log('New Connection Identified');
     
-      socket.on("join", async (room: string) => {
-        await socket.join(room);
-        this._io.sockets.in(room).emit(room, "Room Joined", {"message": "hello"});
+      socket.on("join", async (userId: string) => {
+        await socket.join(userId);
+        console.log(`${userId} connected with Socket`);
+        this._io.sockets.in(userId).emit(SOCKET.EVENTS.ROOM_JOINED);
       });
         
       socket.on('disconnect', function () {
-        console.log('A user disconnected\n');
+        console.log('User Disconnected');
      });  
     });
 
   }
 
-  sendMessage(userId: string, message: {message: string, media: string}){
+  sendMessage(userId: string, message: {[key: string]: any}){
     try{
       this._io.sockets.in(userId).emit(SOCKET.EVENTS.MESSAGE, message);
     } catch(error){

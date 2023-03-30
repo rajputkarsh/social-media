@@ -6,4 +6,5 @@ export default interface ReduxState {
   posts: Array<{[key: string]: any}>,
   friends: Array<{[key: string]: any}>,
   userProfile: {[key: string]: any} | null,
+  chatMessages: {[key: string]: any},
 };S

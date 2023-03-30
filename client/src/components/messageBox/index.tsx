@@ -17,11 +17,12 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
   const userInfo = useSelector((state: ReduxState) => state?.user);
   const friends  = useSelector((state: ReduxState) => state?.friends);
   const token    = useSelector((state: ReduxState) => state?.user?.token);
+  const widgetRef        = useRef<HTMLElement | null>(null);
+  const chatWindowRef = useRef<HTMLDivElement | null>(null);
+  const inputRef      = useRef<HTMLInputElement | null>(null);
   const [topOffset, setTopOffset]       = useState<number>(0);
   const [friendInfo, setFriendInfo]     = useState<{[key: string]: any} | null>(null);
   const[messages, setMessages]          = useState<Array<{[key: string]: any}>>([]);
-  const divRef   = useRef<HTMLElement | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const { palette }: { palette: CustomTheme } = useTheme();
 
   const dark = palette.neutral.dark;
@@ -38,9 +39,13 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
     const hours = (moment().utc().diff(moment(messages[0]?.createdAt)))/3600000;
     return 'Last Message: ' + (Math.round(hours) > 0 ? `${Math.round(hours)}h ago` : `${Math.round(hours * 60)} mins ago`);
   };
+
+  const scrollToBottom = () => {
+    chatWindowRef.current?.scrollBy(0, chatWindowRef.current?.scrollHeight);
+  }  
   
   useEffect(() => {
-    setTopOffset(divRef?.current?.offsetTop || 0);
+    setTopOffset(widgetRef?.current?.offsetTop || 0);
 
     if(friendId){
       fetch(URL.LIST_ALL_MESSAGES(friendId), {
@@ -61,6 +66,10 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
   }, []); 
 
   useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  useEffect(() => {
     if(Array.isArray(friends) && friends?.length > 0){
       const currentChatFriend = friends.filter((friend) => friend?.friend?._id == friendId);
       if(currentChatFriend.length > 0) setFriendInfo((prev) => currentChatFriend[0]?.friend);
@@ -74,6 +83,8 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
     if (inputRef?.current ){
       const currentText = inputRef.current.value?.trim();
       inputRef.current.value = '';
+
+      if(!currentText || !currentText.length) return;
 
       const formData = new FormData();
       formData.append('message', currentText);
@@ -99,7 +110,6 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
           toast.error('Something went wrong');
         }
       });
-
     }
   }
 
@@ -122,7 +132,7 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
 
   if (errorMessage){
     return (
-      <WidgetContainer ref={divRef} height={`calc(95vh - ${topOffset}px)`} overflow={'auto'} display={'flex'} flexDirection={'column'}>
+      <WidgetContainer ref={widgetRef} height={`calc(95vh - ${topOffset}px)`} overflow={'auto'} display={'flex'} flexDirection={'column'}>
         <FlexContainer justifyContent={'center !important'}>
           <Typography variant='h4'>
             {errorMessage}
@@ -133,7 +143,7 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
   }
 
   return (
-    <WidgetContainer ref={divRef} height={`calc(95vh - ${topOffset}px)`} overflow={'auto'} display={'flex'} flexDirection={'column'}>
+    <WidgetContainer ref={widgetRef} height={`calc(95vh - ${topOffset}px)`} overflow={'auto'} display={'flex'} flexDirection={'column'}>
       <FlexContainer marginBottom={'0.6rem'} >
         <FlexContainer gap='2rem'>
           <ProfilePicture
@@ -166,13 +176,17 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
         }
         {
           messages.length > 0 && (
-            messages.slice(0).reverse().map((message, index) => (
-              <FlexContainer key={`${friendId}_chat_${index}`} className={css.chatBox + " " + ((message?.sender == friendId )? css.friendMessage : css.userMessage)} >
-                <Typography variant='subtitle1' sx={{border: `1px solid ${medium}`}}>
-                  { message?.message }
-                </Typography>
-              </FlexContainer>
-            ))     
+            <div className={css.chatWindow} ref={chatWindowRef}>
+              {
+                messages.slice(0).reverse().map((message, index) => (
+                  <FlexContainer key={`${friendId}_chat_${index}`} className={css.chatBox + " " + ((message?.sender == friendId )? css.friendMessage : css.userMessage)} >
+                    <Typography variant='subtitle1' sx={{border: `1px solid ${medium}`}}>
+                      { message?.message }
+                    </Typography>
+                  </FlexContainer>
+                ))     
+              }
+            </div>
           )
         }
 

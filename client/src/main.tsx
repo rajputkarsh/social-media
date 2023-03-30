@@ -19,6 +19,7 @@ import storage from "redux-persist/lib/storage";
 import { PersistGate } from "redux-persist/integration/react";
 import './index.css';
 import { socketInstance, SocketProvider } from './context/socket';
+import { ReduxState } from './interfaces';
 
 const persistConfig = { key: "root", storage, version: 1 };
 const persistedReducer = persistReducer(persistConfig, authReducer);

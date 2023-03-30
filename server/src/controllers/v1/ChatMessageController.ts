@@ -45,8 +45,8 @@ class ChatMessageController {
         status: CONSTANTS.CHAT_MESSAGE_STATUS.NOT_SEEN,
       });
 
-      // TODO: Send Socket Message to receiver for message
-
+      global.socketInstance.sendMessage(receiver, result);
+      
       return result;
     } catch(error){
       throw error;

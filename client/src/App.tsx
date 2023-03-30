@@ -5,7 +5,7 @@ import Login from './pages/login';
 import Register from './pages/register';
 import Profile  from './pages/profile';
 import Messages from './pages/messages';
-import { useMemo } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { CssBaseline, PaletteMode, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
@@ -14,14 +14,23 @@ import { ReduxState } from './interfaces';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { fetchInterceptor } from './interceptors';
+import SocketContext from './context/socket';
 
 function App() {
 
   fetchInterceptor();
 
+  const socketInstance = useContext(SocketContext);
   const mode = useSelector((state: ReduxState) => state.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode as PaletteMode)), [mode]);
   const isAuth = Boolean(useSelector((state: ReduxState) => state?.user?.token));
+  const user = useSelector((state: ReduxState) => state.user);
+
+  useEffect(() => {
+    if(user?.userId){
+      socketInstance.emit('join', user.userId);
+    }  
+  }, []);  
 
   return (
     <div className="App">

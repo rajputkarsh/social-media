@@ -8,6 +8,7 @@ const initialState: ReduxState = {
   token: null,
   posts: [],
   friends: [],
+  chatMessages: {},
 };
 
 export const authSlice = createSlice({
@@ -40,10 +41,13 @@ export const authSlice = createSlice({
         return post;
       });
       state.posts = updatedPosts;
+    },
+    setMessages: (state: ReduxState, action) => {
+      state.chatMessages = action.payload.chatMessages
     }
   },
 });
 
-export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost, setUserProfile } = authSlice.actions;
+export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost, setUserProfile, setMessages } = authSlice.actions;
 
 export default authSlice.reducer;
