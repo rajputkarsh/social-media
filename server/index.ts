@@ -8,6 +8,12 @@ import fileUpload from 'express-fileupload';
 import { connectToDatabase } from './src/utils/database';
 import router from './src/routes';
 import { HTTP_STATUS_CODE, MESSAGES } from './src/constants';
+import { createServer, Server } from 'http';
+import { WebSocket } from './src/sockets';
+
+declare global {
+  var socketInstance: any;
+}
 
 if(process.env.NODE_ENV == 'dev'){
   dotenv.config({ path: `.env` });
@@ -35,7 +41,12 @@ app.use(fileUpload({
 
 app.use('/api', router);
 
-app.listen(process.env.PORT, async () => {
+const httpServer: Server = createServer(app);
+
+global.socketInstance = new WebSocket(httpServer);
+
+
+httpServer.listen(process.env.PORT, async () => {
   try{
     await connectToDatabase();
     console.log(`Server started on port = ${process.env.PORT}`);
