@@ -1,5 +1,6 @@
 import { Server } from "http";
 import { Server as SocketIOServer, Socket } from "socket.io";
+import { SOCKET } from "../constants";
 
 export class WebSocket{
 
@@ -24,12 +25,7 @@ export class WebSocket{
         await socket.join(room);
         this._io.sockets.in(room).emit(room, "Room Joined", {"message": "hello"});
       });
-    
-      socket.on("sendMessage", (data: {[key: string]: any}) => {
-        const {room, message} = data;
-        this._io.sockets.in(room).emit(room, "message", message);
-      } )
-    
+        
       socket.on('disconnect', function () {
         console.log('A user disconnected\n');
      });  
@@ -37,4 +33,12 @@ export class WebSocket{
 
   }
 
-}
+  sendMessage(userId: string, message: {message: string, media: string}){
+    try{
+      this._io.sockets.in(userId).emit(SOCKET.EVENTS.MESSAGE, message);
+    } catch(error){
+      throw error;
+    }
+  }
+
+} 

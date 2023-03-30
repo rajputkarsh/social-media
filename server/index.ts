@@ -12,7 +12,7 @@ import { createServer, Server } from 'http';
 import { WebSocket } from './src/sockets';
 
 declare global {
-  var socketInstance: any;
+  var socketInstance: WebSocket;
 }
 
 if(process.env.NODE_ENV == 'dev'){
