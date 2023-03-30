@@ -30,4 +30,7 @@ export default {
   LIST_ALL_MESSAGES: (friendId: string) => `${import.meta.env.VITE_API_BASE_URL}/chat/${friendId}`,
   GET_LAST_MESSAGE: (friendId: string) => `${import.meta.env.VITE_API_BASE_URL}/chat/${friendId}/get-last-message`,
   SEND_MESSAGE: () => `${import.meta.env.VITE_API_BASE_URL}/chat/send`,
+
+  // socket: 
+  SOCKET_BASE_URL: () => `${import.meta.env.VITE_BACKEND_URL}`
 };

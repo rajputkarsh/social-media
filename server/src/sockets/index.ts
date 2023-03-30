@@ -4,7 +4,7 @@ import { SOCKET } from "../constants";
 
 export class WebSocket{
 
-  _io: SocketIOServer;
+  private _io: SocketIOServer;
 
   constructor(httpServer: Server){
 

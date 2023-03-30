@@ -18,6 +18,7 @@ import {
 import storage from "redux-persist/lib/storage";
 import { PersistGate } from "redux-persist/integration/react";
 import './index.css';
+import { socketInstance, SocketProvider } from './context/socket';
 
 const persistConfig = { key: "root", storage, version: 1 };
 const persistedReducer = persistReducer(persistConfig, authReducer);
@@ -35,7 +36,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistStore(store)}>
-        <App />
+        <SocketProvider value={socketInstance}>
+          <App />
+        </SocketProvider>
       </PersistGate>
     </Provider>
   </React.StrictMode>,
