@@ -18,7 +18,7 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
   
   const dispatch = useDispatch();
   const socketInstance = useContext(SocketContext);
-  const userInfo = useSelector((state: ReduxState) => state?.user);
+  const user = useSelector((state: ReduxState) => state?.user);
   const messages = useSelector((state: ReduxState) => state?.chatMessages);
   const friends  = useSelector((state: ReduxState) => state?.friends);
   const token    = useSelector((state: ReduxState) => state?.user?.token);
@@ -37,20 +37,30 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
 
   let previouslyPressedKey: string = '';
 
-  socketInstance.on('MESSAGE', (data) => {
+  socketInstance.on('MESSAGE', (messageData) => {
+    const data = JSON.parse(JSON.stringify(messageData));
+    if(messageData?.sender == friendId){
+      fetch(URL.MARK_MESSAGE_SEEN(friendId as string),{
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      data['status'] = 'SEEN';
+      console.log('data ==> ', data);
+    }
     let previousMessages = JSON.parse(JSON.stringify(messages[friendId as string]));
     previousMessages.unshift(data);
     dispatch(setMessages({chatMessages: {...messages, [friendId as string]: previousMessages}}));    
   })
 
   const getLastChatMessageTime = (): string => {
-    if(messages[friendId as string].length < 1) return '';
+    if( !messages[friendId as string] || messages[friendId as string].length < 1) return '';
     const hours = (moment().utc().diff(moment(messages[friendId as string][0]?.createdAt)))/3600000;
     return 'Last Message: ' + (Math.round(hours) > 0 ? `${Math.round(hours)}h ago` : `${Math.round(hours * 60)} mins ago`);
   };
   
   useEffect(() => {
     chatWindowRef.current?.scrollBy(0, chatWindowRef.current?.scrollHeight);
+
   }, [messages]);
 
   useEffect(() => {
@@ -62,21 +72,32 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
       if(currentChatFriend.length > 0) setFriendInfo((prev) => currentChatFriend[0]?.friend);
     }
 
-    if(friendId){
-      fetch(URL.LIST_ALL_MESSAGES(friendId), {
+    async function updateMessages(){
+      if(friendId){
+
+        // mark messages as seen
+        await fetch(URL.MARK_MESSAGE_SEEN(friendId),{
+          method: 'PATCH',
+          headers: { Authorization: `Bearer ${token}` },
+        });
   
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },      
-      }).then((response) => {
-        if(response.status == 200){
-          response.json().then((data) => {
-            dispatch(setMessages({chatMessages: {...messages, [friendId as string]: data.data?.data}}));
-          })
-        } else{
-          console.log('Something went wrong');
-        }
-      });
-    }    
+        // get messages
+        fetch(URL.LIST_ALL_MESSAGES(friendId), {  
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },      
+        }).then((response) => {
+          if(response.status == 200){
+            response.json().then((data) => {
+              dispatch(setMessages({chatMessages: {...messages, [friendId as string]: data.data?.data}}));
+            })
+          } else{
+            console.log('Something went wrong');
+          }
+        });
+      }
+    }
+
+    updateMessages();
 
   }, [friendId]);
 
@@ -163,7 +184,7 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
       <Divider />
 
         {
-          !messages[friendId as string].length && (
+          (!messages[friendId as string] || !messages[friendId as string].length) && (
             <FlexContainer justifyContent={'center !important'} height={'100% !important'} alignItems={'center !important'}>
               <Typography variant='h5'>
                 No Chat Found!
@@ -172,7 +193,7 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
           )
         }
         {
-          messages[friendId as string].length > 0 && (
+          (messages[friendId as string] && messages[friendId as string].length) > 0 && (
             <div className={css.chatWindow} ref={chatWindowRef}>
               {
                 messages[friendId as string].slice(0).reverse().map((message: {[key: string]: any}, index: number) => (

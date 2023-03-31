@@ -53,6 +53,18 @@ class ChatMessageController {
     }
   }
 
+  async markSeen(userId: string, friendId: string){
+    try{
+      return await chatMessageDao.updateMany({
+        sender: new mongoose.Types.ObjectId(friendId),
+        receiver: new mongoose.Types.ObjectId(userId),
+        status: CONSTANTS.CHAT_MESSAGE_STATUS.NOT_SEEN,
+      }, {status: CONSTANTS.CHAT_MESSAGE_STATUS.SEEN})
+    } catch(error){
+      throw error;
+    }
+  }
+
 }
 
 export default new ChatMessageController();

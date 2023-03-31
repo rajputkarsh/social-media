@@ -136,4 +136,10 @@ export default {
     message: 'Last chat message fetched successfully',
     data   : data,
   }),
+  MESSAGE_MARKED_SEEN:(data: Object) => ({
+    status : HTTP_STATUS_CODE.OK,
+    type   : 'MESSAGE_MARKED_SEEN',
+    message: 'Message marked seen successfully',
+    data   : data,
+  }),
 };

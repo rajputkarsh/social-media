@@ -20,6 +20,7 @@ const Messages = () => {
   // initialize chat messages with last messages of each friend  
   useEffect(() => {
     if(!friendId){
+      
       const friendIds = friends?.map((friend) => friend?.friend?._id);
       Promise.all(
         friendIds.map((friend: string) =>
@@ -44,7 +45,6 @@ const Messages = () => {
           dispatch(setMessages({chatMessages: lastChatMessages}));
         });
       });    
-      
     } 
   }, []);
 

@@ -69,6 +69,14 @@ class ChatMessageDao{
     }
   }
 
+  updateMany(query: {[key: string]: any}, update: Partial<IChatMessages>){
+    try{
+      return ChatMessageModel.updateMany(query, update);
+    } catch(error){
+      throw error;
+    }
+  }
+
   delete(id: mongoose.Types.ObjectId){
     try{
       return ChatMessageModel.findByIdAndUpdate(id, {status: CONSTANTS.STATUS.DELETED});

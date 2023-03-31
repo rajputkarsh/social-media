@@ -25,7 +25,7 @@ function MessageList() {
   const getLastChatMessage = (
     userId: string
   ): { message: string; time: string; seen: boolean } => {
-    if ( Object.keys(lastMessages).length < 1 || !lastMessages[userId] || lastMessages[userId]?.length < 1 ) return {message: '', time: '', seen: true};
+    if ( Object.keys(lastMessages).length < 1 || !lastMessages[userId] || lastMessages[userId]?.length < 1 ) return {message: 'No Chat Found', time: '-', seen: true};
 
     let lastMessage = lastMessages[userId];
     const hours = (moment().utc().diff(moment(lastMessage[0]?.createdAt)))/3600000;
@@ -33,9 +33,11 @@ function MessageList() {
     return {
       message: lastMessage[0]?.media ? "Media" : lastMessage[0]?.message,
       time: Math.round(hours) > 0 ? `${Math.round(hours)}h ago` : `${Math.round(hours * 60)} mins ago`,
-      seen: userId == user?.userId || lastMessage[0]?.status == 'SEEN',
+      seen: lastMessage[0].sender == user?.userId || lastMessage[0]?.status == 'SEEN',
     };
   };
+
+  console.log('rerendering message list')
 
   return (
     <WidgetContainer
@@ -56,8 +58,6 @@ function MessageList() {
       {friends?.map((friend, index) => {
         const lastMessage = getLastChatMessage(friend?.friend?._id);
         let lastMessageText = lastMessage.message;
-
-        if(!lastMessage.message) return null;
 
         if (lastMessageText?.length && lastMessageText.split(" ")?.length > 3) {
           lastMessageText =

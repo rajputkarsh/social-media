@@ -48,6 +48,26 @@ chatMessageRouter.get(
   }
 );
 
+chatMessageRouter.patch(
+  '/:friendId/mark-seen',
+  userMiddleware.authenticate,
+  async function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
+    try{
+      const userId   = req.user as string;
+      const friendId = req.params['friendId'];
+
+      if(!friendId){
+        res.status(HTTP_STATUS_CODE.BAD_REQUEST).send(MESSAGES.ERROR.BAD_REQUEST('Invalid ID'));
+      }
+
+      const result = await chatMessageController.markSeen(userId, friendId);
+      res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.MESSAGE_MARKED_SEEN(result));
+    } catch(error: any){
+      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
+    }
+  }
+);
+
 chatMessageRouter.get(
   '/:friendId/get-last-message',
   userMiddleware.authenticate,
@@ -62,10 +82,9 @@ chatMessageRouter.get(
       }
 
       const result = await chatMessageController.getLastMessage(userId, friendId);
-
       res.status(HTTP_STATUS_CODE.OK).send(MESSAGES.SUCCESS.LAST_CHAT_MESSAGE(result));
     } catch(error: any){
-      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);      
+      res.status(error?.status || HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send(error);
     }
   }
 );
