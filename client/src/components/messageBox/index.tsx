@@ -1,6 +1,6 @@
 import { Divider, IconButton, InputBase, Typography } from "@mui/material";
-import { useRef, useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useRef, useState, useEffect, useContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import FlexContainer from "../../containers/flexContainer";
 import WidgetContainer from "../../containers/widgetContainer"
 import { useTheme } from "@mui/material";
@@ -11,18 +11,22 @@ import * as moment from 'moment-timezone';
 import { URL } from "../../constants";
 import css from './messageBox.module.scss';
 import { toast } from "react-toastify";
+import { setMessages } from "../../state";
+import SocketContext from "../../context/socket";
 
 function MessageBox({ friendId }: {friendId: string | undefined | null}) {
   
+  const dispatch = useDispatch();
+  const socketInstance = useContext(SocketContext);
   const userInfo = useSelector((state: ReduxState) => state?.user);
+  const messages = useSelector((state: ReduxState) => state?.chatMessages);
   const friends  = useSelector((state: ReduxState) => state?.friends);
   const token    = useSelector((state: ReduxState) => state?.user?.token);
-  const widgetRef        = useRef<HTMLElement | null>(null);
+  const widgetRef     = useRef<HTMLElement | null>(null);
   const chatWindowRef = useRef<HTMLDivElement | null>(null);
   const inputRef      = useRef<HTMLInputElement | null>(null);
-  const [topOffset, setTopOffset]       = useState<number>(0);
-  const [friendInfo, setFriendInfo]     = useState<{[key: string]: any} | null>(null);
-  const[messages, setMessages]          = useState<Array<{[key: string]: any}>>([]);
+  const [topOffset, setTopOffset]   = useState<number>(0);
+  const [friendInfo, setFriendInfo] = useState<{[key: string]: any} | null>(null);
   const { palette }: { palette: CustomTheme } = useTheme();
 
   const dark = palette.neutral.dark;
@@ -32,20 +36,31 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
   const primary = palette.primary.main;
 
   let previouslyPressedKey: string = '';
-  let previouslyPressedKeyTime: number = 0;
+
+  socketInstance.on('MESSAGE', (data) => {
+    let previousMessages = JSON.parse(JSON.stringify(messages[friendId as string]));
+    previousMessages.unshift(data);
+    dispatch(setMessages({chatMessages: {...messages, [friendId as string]: previousMessages}}));    
+  })
 
   const getLastChatMessageTime = (): string => {
-    if(messages.length < 1) return '';
-    const hours = (moment().utc().diff(moment(messages[0]?.createdAt)))/3600000;
+    if(messages[friendId as string].length < 1) return '';
+    const hours = (moment().utc().diff(moment(messages[friendId as string][0]?.createdAt)))/3600000;
     return 'Last Message: ' + (Math.round(hours) > 0 ? `${Math.round(hours)}h ago` : `${Math.round(hours * 60)} mins ago`);
   };
-
-  const scrollToBottom = () => {
-    chatWindowRef.current?.scrollBy(0, chatWindowRef.current?.scrollHeight);
-  }  
   
   useEffect(() => {
+    chatWindowRef.current?.scrollBy(0, chatWindowRef.current?.scrollHeight);
+  }, [messages]);
+
+  useEffect(() => {
+
     setTopOffset(widgetRef?.current?.offsetTop || 0);
+
+    if(Array.isArray(friends) && friends?.length > 0){
+      const currentChatFriend = friends.filter((friend) => friend?.friend?._id == friendId);
+      if(currentChatFriend.length > 0) setFriendInfo((prev) => currentChatFriend[0]?.friend);
+    }
 
     if(friendId){
       fetch(URL.LIST_ALL_MESSAGES(friendId), {
@@ -55,25 +70,14 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
       }).then((response) => {
         if(response.status == 200){
           response.json().then((data) => {
-            setMessages(data.data?.data);
+            dispatch(setMessages({chatMessages: {...messages, [friendId as string]: data.data?.data}}));
           })
         } else{
           console.log('Something went wrong');
         }
       });
-    }
+    }    
 
-  }, []); 
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  useEffect(() => {
-    if(Array.isArray(friends) && friends?.length > 0){
-      const currentChatFriend = friends.filter((friend) => friend?.friend?._id == friendId);
-      if(currentChatFriend.length > 0) setFriendInfo((prev) => currentChatFriend[0]?.friend);
-    }
   }, [friendId]);
 
   let errorMessage = (!friendId) ? 'Please select a chat to continue' : '';
@@ -99,12 +103,9 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
         if(response.status === 200){
           response.json().then((data) => {
             const newMessage = data.data as unknown as {[key: string]: any};
-            setMessages(
-              (prev) => {
-                const data = JSON.parse(JSON.stringify(prev))
-                data.unshift(newMessage);
-                return data;
-              });
+            let previousMessages = JSON.parse(JSON.stringify(messages[friendId as string]));
+            previousMessages.unshift(newMessage);
+            dispatch(setMessages({chatMessages: {...messages, [friendId as string]: previousMessages}}));
           });
         } else{
           toast.error('Something went wrong');
@@ -115,9 +116,6 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
 
   const handleInputChange = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const currentlyPressedKey: string = e.key;
-    const currentlyPressedKeyTime: number = new Date().getTime();
-
-    // TODO: check if time logic is required or something else can be done
 
     if(
       (previouslyPressedKey !== 'Shift' && currentlyPressedKey === 'Enter') ||
@@ -127,7 +125,6 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
     }
 
     previouslyPressedKey = currentlyPressedKey;
-    previouslyPressedKeyTime = currentlyPressedKeyTime;
   }
 
   if (errorMessage){
@@ -166,7 +163,7 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
       <Divider />
 
         {
-          !messages.length && (
+          !messages[friendId as string].length && (
             <FlexContainer justifyContent={'center !important'} height={'100% !important'} alignItems={'center !important'}>
               <Typography variant='h5'>
                 No Chat Found!
@@ -175,10 +172,10 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
           )
         }
         {
-          messages.length > 0 && (
+          messages[friendId as string].length > 0 && (
             <div className={css.chatWindow} ref={chatWindowRef}>
               {
-                messages.slice(0).reverse().map((message, index) => (
+                messages[friendId as string].slice(0).reverse().map((message: {[key: string]: any}, index: number) => (
                   <FlexContainer key={`${friendId}_chat_${index}`} className={css.chatBox + " " + ((message?.sender == friendId )? css.friendMessage : css.userMessage)} >
                     <Typography variant='subtitle1' sx={{border: `1px solid ${medium}`}}>
                       { message?.message }
