@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Box, useMediaQuery } from "@mui/material";
 import MessageBox from "../../components/messageBox";
@@ -8,14 +8,31 @@ import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../interfaces";
 import { URL } from "../../constants";
 import { setMessages } from "../../state";
+import SocketContext from "../../context/socket";
 
 const Messages = () => {
   const dispatch = useDispatch();
   const { friendId } = useParams();
-  const user  = useSelector((state: ReduxState) => state.user);
-  const token = useSelector((state: ReduxState) => state.user?.token);
-  const friends = useSelector((state: ReduxState) => state.friends);
+  const socketInstance = useContext(SocketContext);
+  const user     = useSelector((state: ReduxState) => state.user);
+  const token    = useSelector((state: ReduxState) => state.user?.token);
+  const friends  = useSelector((state: ReduxState) => state.friends);
+  const messages = useSelector((state: ReduxState) => state?.chatMessages);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
+
+  socketInstance.on('MESSAGE', (messageData) => {
+    const data = JSON.parse(JSON.stringify(messageData));
+    if(messageData?.sender == friendId){
+      fetch(URL.MARK_MESSAGE_SEEN(friendId as string),{
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      data['status'] = 'SEEN';
+    }
+    let previousMessages = JSON.parse(JSON.stringify(messages[messageData?.sender  as string]));
+    previousMessages.unshift(data);
+    dispatch(setMessages({chatMessages: {...messages, [messageData?.sender  as string]: previousMessages}}));    
+  })
 
   // initialize chat messages with last messages of each friend  
   useEffect(() => {

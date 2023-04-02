@@ -12,13 +12,10 @@ import { URL } from "../../constants";
 import css from './messageBox.module.scss';
 import { toast } from "react-toastify";
 import { setMessages } from "../../state";
-import SocketContext from "../../context/socket";
 
 function MessageBox({ friendId }: {friendId: string | undefined | null}) {
   
   const dispatch = useDispatch();
-  const socketInstance = useContext(SocketContext);
-  const user = useSelector((state: ReduxState) => state?.user);
   const messages = useSelector((state: ReduxState) => state?.chatMessages);
   const friends  = useSelector((state: ReduxState) => state?.friends);
   const token    = useSelector((state: ReduxState) => state?.user?.token);
@@ -36,21 +33,6 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
   const primary = palette.primary.main;
 
   let previouslyPressedKey: string = '';
-
-  socketInstance.on('MESSAGE', (messageData) => {
-    const data = JSON.parse(JSON.stringify(messageData));
-    if(messageData?.sender == friendId){
-      fetch(URL.MARK_MESSAGE_SEEN(friendId as string),{
-        method: 'PATCH',
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      data['status'] = 'SEEN';
-      console.log('data ==> ', data);
-    }
-    let previousMessages = JSON.parse(JSON.stringify(messages[friendId as string]));
-    previousMessages.unshift(data);
-    dispatch(setMessages({chatMessages: {...messages, [friendId as string]: previousMessages}}));    
-  })
 
   const getLastChatMessageTime = (): string => {
     if( !messages[friendId as string] || messages[friendId as string].length < 1) return '';
