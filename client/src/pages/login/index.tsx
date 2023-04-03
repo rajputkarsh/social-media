@@ -90,8 +90,9 @@ const Login = () => {
 
     // check if there is a redirect url before redirecting
     const redirectUrl: string | null = searchParams.get('redirect');
+    console.log(`redirectUrl =>  `, redirectUrl);
     if(redirectUrl){
-      navigate(redirectUrl);
+      window.location.replace(redirectUrl);
     } else{
       navigate("/");
     }

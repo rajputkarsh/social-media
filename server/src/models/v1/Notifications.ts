@@ -28,6 +28,13 @@ const notificationSchema: Schema = new Schema<INotification>({
     type: String,
     required: false,    
   },
+  status: {
+    type: String,
+    required: false,
+    enum: Object.values(CONSTANTS.NOTIFICATION_STATUS),
+    default: CONSTANTS.NOTIFICATION_STATUS.NOT_SEEN,
+    
+  }
 },
 {
   versionKey: false,
