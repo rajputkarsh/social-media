@@ -9,14 +9,13 @@ import {
   FormControl,
   useTheme,
   useMediaQuery,
+  Menu as MenuHolder,
 } from "@mui/material";
 import {
   Message,
   DarkMode,
   LightMode,
   Notifications,
-  Help,
-  Menu,
   Close,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,7 +27,9 @@ import { SETTINGS } from "../../constants";
 import SearchBar from "../widgets/searchBar";
 
 const Navbar = () => {
-  const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
+  const [isMobileMenuToggled, setIsMobileMenuToggled] = useState<boolean>(false);
+  const [notificationMenuAnchor, setNotificationMenuAnchor] = useState<null | HTMLElement>(null);
+  const open = Boolean(notificationMenuAnchor);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state: ReduxState) => state.user);
@@ -46,6 +47,29 @@ const Navbar = () => {
     dispatch(setLogout());
     navigate('/')
   }
+
+  const handleNotificationMenuButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setNotificationMenuAnchor(event.currentTarget);
+  };
+  const handleNotificationMenuClose = () => {
+    setNotificationMenuAnchor(null);
+  };  
+
+  const NotificationMenu = () => (
+    <MenuHolder
+      id="notification-menu"
+      anchorEl={notificationMenuAnchor}
+      open={open}
+      onClose={handleNotificationMenuClose}
+      MenuListProps={{
+        'aria-labelledby': 'notification-button',
+      }}
+    >
+      <MenuItem onClick={handleNotificationMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={handleNotificationMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleNotificationMenuClose}>Logout</MenuItem>
+    </MenuHolder>    
+  );
 
   return (
     <FlexContainer sx={{ padding: "1rem 6%", backgroundColor: alt }}>
@@ -82,9 +106,16 @@ const Navbar = () => {
           <IconButton onClick={() => navigate('/messages')}>
             <Message sx={{ fontSize: "25px" }} />
           </IconButton>
-          <IconButton>
+          <IconButton
+            id="notification-button"
+            aria-controls={open ? 'notification-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            onClick={handleNotificationMenuButtonClick}
+          >
             <Notifications sx={{ fontSize: "25px" }} />
           </IconButton>
+          <NotificationMenu />
           <FormControl variant="standard">
             <Select
               value={fullName}
@@ -117,7 +148,6 @@ const Navbar = () => {
         <IconButton
           onClick={() => setIsMobileMenuToggled(!isMobileMenuToggled)}
         >
-          <Menu />
         </IconButton>
       )}
 
@@ -165,9 +195,16 @@ const Navbar = () => {
             <IconButton onClick={() => navigate('/messages')}>
               <Message sx={{ fontSize: "25px" }} />
             </IconButton>
-            <IconButton>
+            <IconButton
+              id="notification-button"
+              aria-controls={open ? 'notification-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+              onClick={handleNotificationMenuButtonClick}
+            >
               <Notifications sx={{ fontSize: "25px" }} />
             </IconButton>
+            <NotificationMenu />
             <FormControl variant="standard">
               <Select
                 value={fullName}
