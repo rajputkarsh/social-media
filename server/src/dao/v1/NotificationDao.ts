@@ -1,13 +1,22 @@
 import mongoose from "mongoose";
 import { CONSTANTS } from "../../constants";
 import { INotification } from "../../interfaces";
+import { PaginationOptions } from "../../interfaces/Common";
 import { NotificationModel } from "../../models";
 
 
 
 class VoteDao{
-  async list(query: Object, page: number, limit: number) {
+  async list(query: Object, page: number|null, limit: number|null) {
     try {
+
+      let pageCondition: PaginationOptions = [];
+
+      if(page && limit){
+        pageCondition.push({'$skip' : (page - 1) * limit});
+        pageCondition.push({'$limit': limit});
+      }
+
       const data = await NotificationModel.aggregate([
         {
           $match: {
@@ -20,12 +29,7 @@ class VoteDao{
             createdAt: -1,
           },
         },
-        {
-          $skip: (page - 1) * limit,
-        },
-        {
-          $limit: limit,
-        },
+        ...pageCondition,
       ]);
 
       const count: number = (await NotificationModel.aggregate([
