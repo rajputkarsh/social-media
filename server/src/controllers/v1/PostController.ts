@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { CONSTANTS, MESSAGES } from "../../constants";
-import { commentDao, friendDao, postDao, voteDao } from "../../dao";
+import { CONSTANTS, MESSAGES, SOCKET } from "../../constants";
+import { commentDao, friendDao, notificationDao, postDao, userDao, voteDao } from "../../dao";
 import { IPost } from "../../interfaces";
 
 class PostController {
@@ -32,8 +32,24 @@ class PostController {
   async add(post: IPost, userId: string) {
     try {
       const newPost = await postDao.save({...post, postedBy: new mongoose.Types.ObjectId(userId)});
-      
-      // const friends = await friendDao
+
+      const friends = await friendDao.listWithUserInfo({$or: [{userId: new mongoose.Types.ObjectId(userId)}, {friend: new mongoose.Types.ObjectId(userId)}]}, userId, null, null);
+      if (friends?.count) {
+        // save notification and send socket
+        friends?.data?.forEach((friend: {[key: string]: any}) => {
+          notificationDao.save({
+            type: CONSTANTS.NOTIFICATION_TYPE.NORMAL,
+            action: CONSTANTS.NOTIFICATION_ACTION.POST_ADDED,
+            sender: new mongoose.Types.ObjectId(userId),
+            receiver: new mongoose.Types.ObjectId(friend?.currentFriend.toString()),
+            status: CONSTANTS.NOTIFICATION_STATUS.NOT_SEEN,
+            text: CONSTANTS.NOTIFICATION_TEXT.POST_ADDED(friend?.user?.firstName + " " + friend?.user?.lastName),
+            url: '#',
+          }).then((response: {[key: string]: any}) => {
+            global.socketInstance.sendMessage(friend?.currentFriend.toString(), SOCKET.EVENTS.POST_ADDED, response);
+          })
+        });
+      }
       return await postDao.list({_id: newPost._id}, 1, 1);
     } catch (error) {
       throw error;
@@ -76,6 +92,23 @@ class PostController {
         userId: new mongoose.Types.ObjectId(userId),
       });
 
+      const userInfo = await userDao.list({_id: new mongoose.Types.ObjectId(userId)}, 1, 1);
+      const userName = userInfo?.data[0].firstName + " " + userInfo?.data[0].lastName;
+      const postInfo = await postDao.list({_id: result._id}, 1, 1);
+      const postedBy = postInfo?.data[0]?.postedBy;
+
+      notificationDao.save({
+        type: CONSTANTS.NOTIFICATION_TYPE.NORMAL,
+        action: CONSTANTS.NOTIFICATION_ACTION.POST_ADDED,
+        sender: new mongoose.Types.ObjectId(userId),
+        receiver: new mongoose.Types.ObjectId(postedBy),
+        status: CONSTANTS.NOTIFICATION_STATUS.NOT_SEEN,
+        text: CONSTANTS.NOTIFICATION_TEXT.POST_LIKED(userName),
+        url: '#',
+      }).then((response: {[key: string]: any}) => {
+        global.socketInstance.sendMessage(postedBy, SOCKET.EVENTS.POST_LIKED, response);
+      });
+
       return result;
     } catch (error) {
       throw error;
@@ -108,6 +141,23 @@ class PostController {
         for: CONSTANTS.VOTE_FOR.POST,
         type: CONSTANTS.VOTE_TYPE.DOWNVOTE,
         userId: new mongoose.Types.ObjectId(userId),
+      });
+
+      const userInfo = await userDao.list({_id: new mongoose.Types.ObjectId(userId)}, 1, 1);
+      const userName = userInfo?.data[0].firstName + " " + userInfo?.data[0].lastName;
+      const postInfo = await postDao.list({_id: result._id}, 1, 1);
+      const postedBy = postInfo?.data[0]?.postedBy;
+
+      notificationDao.save({
+        type: CONSTANTS.NOTIFICATION_TYPE.NORMAL,
+        action: CONSTANTS.NOTIFICATION_ACTION.POST_ADDED,
+        sender: new mongoose.Types.ObjectId(userId),
+        receiver: new mongoose.Types.ObjectId(postedBy),
+        status: CONSTANTS.NOTIFICATION_STATUS.NOT_SEEN,
+        text: CONSTANTS.NOTIFICATION_TEXT.POST_UNLIKED(userName),
+        url: '#',
+      }).then((response: {[key: string]: any}) => {
+        global.socketInstance.sendMessage(postedBy, SOCKET.EVENTS.POST_UNLIKED, response);
       });
 
       return result;

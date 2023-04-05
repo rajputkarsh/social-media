@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { CONSTANTS, MESSAGES } from "../../constants";
+import { CONSTANTS, MESSAGES, SOCKET } from "../../constants";
 import { chatMessageDao } from "../../dao";
 import { IChatMessages } from "../../interfaces";
 import { ChatMessageRequest } from "../../interfaces/request/ChatMessageRequest";
@@ -45,7 +45,7 @@ class ChatMessageController {
         status: CONSTANTS.CHAT_MESSAGE_STATUS.NOT_SEEN,
       });
 
-      global.socketInstance.sendMessage(receiver, result);
+      global.socketInstance.sendMessage(receiver, SOCKET.EVENTS.MESSAGE, result);
       
       return result;
     } catch(error){

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { CONSTANTS } from "../../constants";
+import { PaginationOptions } from "../../interfaces/Common";
 import { FriendModel } from "../../models";
 
 class FriendDao {
@@ -60,56 +61,15 @@ class FriendDao {
     }
   }
 
-  async listWithUserInfo(query: Object, userId: string, page: number, limit: number){
+  async listWithUserInfo(query: Object, userId: string, page: number | null, limit: number | null){
     try{
 
-      console.log(JSON.stringify([
-        {
-          $match: {
-            ...query,
-            status: CONSTANTS.STATUS.ACTIVE
-          },
-        },
-        {
-          $addFields: {
-            currentFriend: {
-              $cond: [
-              {
-                $eq: ['$userId', new mongoose.Types.ObjectId(userId)]
-              },
-                '$friend',
-                '$userId'
-              ]
-            }
-          }
-        },
-        {
-          $lookup: {
-            from: 'users',
-            localField: 'currentFriend',
-            foreignField: '_id',
-            as: 'friend'
-          }
-        },
-        {
-          $addFields: {
-            friend: {
-                "$arrayElemAt": ["$friend", -1]
-            }
-          }
-        },
-        {
-          $sort: {
-            createdAt: -1,
-          },
-        },
-        {
-          $skip: (page - 1) * limit,
-        },
-        {
-          $limit: limit,
-        },
-      ], null, 2));
+      let pageCondition: PaginationOptions = [];
+
+      if(page && limit){
+        pageCondition.push({'$skip' : (page - 1) * limit});
+        pageCondition.push({'$limit': limit});
+      }
 
       const data = await FriendModel.aggregate([
         {
@@ -132,6 +92,19 @@ class FriendDao {
           }
         },
         {
+          $addFields: {
+            user: new mongoose.Types.ObjectId(userId)
+          },
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'user',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
           $lookup: {
             from: 'users',
             localField: 'currentFriend',
@@ -147,16 +120,18 @@ class FriendDao {
           }
         },
         {
+          $addFields: {
+            user: {
+                "$arrayElemAt": ["$user", -1]
+            }
+          }
+        },        
+        {
           $sort: {
             createdAt: -1,
           },
         },
-        {
-          $skip: (page - 1) * limit,
-        },
-        {
-          $limit: limit,
-        },
+        ...pageCondition,
       ]);
 
       const count: number = (await FriendModel.aggregate([
@@ -166,6 +141,54 @@ class FriendDao {
             status: CONSTANTS.STATUS.ACTIVE
           },
         },
+        {
+          $addFields: {
+            currentFriend: {
+              $cond: [
+              {
+                $eq: ['$userId', new mongoose.Types.ObjectId(userId)]
+              },
+                '$friend',
+                '$userId'
+              ]
+            }
+          }
+        },
+        {
+          $addFields: {
+            user: new mongoose.Types.ObjectId(userId)
+          },
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'user',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'currentFriend',
+            foreignField: '_id',
+            as: 'friend'
+          }
+        },
+        {
+          $addFields: {
+            friend: {
+                "$arrayElemAt": ["$friend", -1]
+            }
+          }
+        },
+        {
+          $addFields: {
+            user: {
+                "$arrayElemAt": ["$user", -1]
+            }
+          }
+        },   
         {
           $sort: {
             createdAt: -1,

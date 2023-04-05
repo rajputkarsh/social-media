@@ -10,6 +10,11 @@ const notificationSchema: Schema = new Schema<INotification>({
     required: true,
     enum: Object.values(CONSTANTS.NOTIFICATION_TYPE)
   },
+  action: {
+    type: String,
+    required: true,
+    enum: Object.values(CONSTANTS.NOTIFICATION_ACTION)
+  },
   sender: {
     required: false,
     type: ObjectId,

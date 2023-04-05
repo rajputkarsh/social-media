@@ -106,7 +106,7 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
         if(response.status === 200){
           response.json().then((data) => {
             const newMessage = data.data as unknown as {[key: string]: any};
-            let previousMessages = JSON.parse(JSON.stringify(messages[friendId as string]));
+            let previousMessages = JSON.parse(JSON.stringify(messages[friendId as string])) || [];
             previousMessages.unshift(newMessage);
             dispatch(setMessages({chatMessages: {...messages, [friendId as string]: previousMessages}}));
           });

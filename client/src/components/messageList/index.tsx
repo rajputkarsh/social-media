@@ -56,8 +56,8 @@ function MessageList() {
         const lastMessageFriend1 = Array.isArray(lastMessages[friend1?.friend?._id]) ? lastMessages[friend1?.friend?._id][0] : null;
         const lastMessageFriend2 = Array.isArray(lastMessages[friend2?.friend?._id]) ? lastMessages[friend2?.friend?._id][0] : null;
 
-        const friend1LastMessageTime = lastMessageFriend1?.updatedAt ? new Date(lastMessageFriend1?.updatedAt).getTime() : Number.MAX_VALUE;
-        const friend2LastMessageTime = lastMessageFriend2?.updatedAt ? new Date(lastMessageFriend2?.updatedAt).getTime() : Number.MAX_VALUE;
+        const friend1LastMessageTime = lastMessageFriend1?.updatedAt ? new Date(lastMessageFriend1?.updatedAt).getTime() : Number.MIN_VALUE;
+        const friend2LastMessageTime = lastMessageFriend2?.updatedAt ? new Date(lastMessageFriend2?.updatedAt).getTime() : Number.MIN_VALUE;
 
         return friend2LastMessageTime - friend1LastMessageTime;
       }
