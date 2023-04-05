@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { CONSTANTS, MESSAGES } from "../../constants";
-import { commentDao, postDao, voteDao } from "../../dao";
+import { commentDao, friendDao, postDao, voteDao } from "../../dao";
 import { IPost } from "../../interfaces";
 
 class PostController {
@@ -32,6 +32,8 @@ class PostController {
   async add(post: IPost, userId: string) {
     try {
       const newPost = await postDao.save({...post, postedBy: new mongoose.Types.ObjectId(userId)});
+      
+      // const friends = await friendDao
       return await postDao.list({_id: newPost._id}, 1, 1);
     } catch (error) {
       throw error;

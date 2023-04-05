@@ -99,7 +99,7 @@ class UserController {
 
   getFriendList(userId: string, page: number, limit: number){
     try{
-      return friendDao.list({userId: new mongoose.Types.ObjectId(userId)}, page, limit);
+      return friendDao.listWithUserInfo({$or: [{userId: new mongoose.Types.ObjectId(userId)}, {friend: new mongoose.Types.ObjectId(userId)}]}, userId, page, limit);
     } catch(error){
       throw error;
     }
@@ -107,16 +107,21 @@ class UserController {
 
   async updateFriend(userId: string, friendId: string, add:boolean){
     try{
+      let friends = await friendDao.list({
+        $or: [
+          {userId: new mongoose.Types.ObjectId(userId), friend: new mongoose.Types.ObjectId(friendId)},
+          {friend: new mongoose.Types.ObjectId(userId), userId: new mongoose.Types.ObjectId(friendId)},
+        ]
+      }, 1, 1);
+
       if(add){
         // add friend
-        let friends = await friendDao.list({userId: new mongoose.Types.ObjectId(userId), friend: new mongoose.Types.ObjectId(friendId)}, 1, 1);
         if(friends.count > 0) throw MESSAGES.ERROR.ALREADY_ADDED_FRIEND;
 
         await friendDao.save(new mongoose.Types.ObjectId(userId), new mongoose.Types.ObjectId(friendId));
         return MESSAGES.SUCCESS.FRIEND_ADDED_SUCCESSFULLY;
       } else{
         // delete friend
-        let friends = await friendDao.list({userId: new mongoose.Types.ObjectId(userId), friend: new mongoose.Types.ObjectId(friendId)}, 1, 1);
         if(friends.count == 0) throw MESSAGES.ERROR.FRIEND_DOES_NOT_EXIST;
 
         await friendDao.delete(new mongoose.Types.ObjectId(userId), new mongoose.Types.ObjectId(friendId));
@@ -126,7 +131,6 @@ class UserController {
       throw error;
     }
   }
-
 }
 
 export default new UserController();
