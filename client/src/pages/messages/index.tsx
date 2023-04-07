@@ -32,7 +32,7 @@ const Messages = () => {
     let previousMessages = JSON.parse(JSON.stringify(messages[messageData?.sender  as string]));
     previousMessages.unshift(data);
     dispatch(setMessages({chatMessages: {...messages, [messageData?.sender  as string]: previousMessages}}));    
-  })
+  });
 
   // initialize chat messages with last messages of each friend  
   useEffect(() => {

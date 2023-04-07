@@ -9,23 +9,25 @@ const initialState: ReduxState = {
   posts: [],
   friends: [],
   chatMessages: {},
+  unseenChatMessages: false,
+  unseenNotifications: false,
 };
 
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setMode: (state: ReduxState  ) => {
+    setMode: (state: ReduxState) => {
       state.mode = state.mode === "light" ? "dark" : "light";
     },
     setLogin: (state, action) => {
-      state.user =action.payload
+      state.user = action.payload;
     },
     setUserProfile: (state, action) => {
-      state.userProfile =action.payload
+      state.userProfile = action.payload;
     },
     setLogout: (state) => {
-      Object.assign(state, {...initialState, mode: state.mode});
+      Object.assign(state, { ...initialState, mode: state.mode });
     },
     setFriends: (state: ReduxState, action) => {
       if (state.friends) {
@@ -43,11 +45,28 @@ export const authSlice = createSlice({
       state.posts = updatedPosts;
     },
     setMessages: (state: ReduxState, action) => {
-      state.chatMessages = action.payload.chatMessages
-    }
+      state.chatMessages = action.payload.chatMessages;
+    },
+    setUnseenChatMessages: (state: ReduxState, action) => {
+      state.unseenChatMessages = action.payload.areUnseenChatMessages;
+    },
+    setUnseenNotifications: (state: ReduxState, action) => {
+      state.unseenNotifications = action.payload.areUnseenNotifications;
+    },
   },
 });
 
-export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost, setUserProfile, setMessages } = authSlice.actions;
+export const {
+  setMode,
+  setLogin,
+  setLogout,
+  setFriends,
+  setPosts,
+  setPost,
+  setUserProfile,
+  setMessages,
+  setUnseenChatMessages,
+  setUnseenNotifications,
+} = authSlice.actions;
 
 export default authSlice.reducer;

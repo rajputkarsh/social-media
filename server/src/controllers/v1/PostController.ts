@@ -94,7 +94,7 @@ class PostController {
 
       const userInfo = await userDao.list({_id: new mongoose.Types.ObjectId(userId)}, 1, 1);
       const userName = userInfo?.data[0].firstName + " " + userInfo?.data[0].lastName;
-      const postInfo = await postDao.list({_id: result._id}, 1, 1);
+      const postInfo = await postDao.list({_id: new mongoose.Types.ObjectId(postId)}, 1, 1);
       const postedBy = postInfo?.data[0]?.postedBy;
 
       notificationDao.save({
@@ -106,7 +106,7 @@ class PostController {
         text: CONSTANTS.NOTIFICATION_TEXT.POST_LIKED(userName),
         url: '#',
       }).then((response: {[key: string]: any}) => {
-        global.socketInstance.sendMessage(postedBy, SOCKET.EVENTS.POST_LIKED, response);
+        global.socketInstance.sendMessage(postedBy.toString(), SOCKET.EVENTS.POST_LIKED, response);
       });
 
       return result;
@@ -145,7 +145,7 @@ class PostController {
 
       const userInfo = await userDao.list({_id: new mongoose.Types.ObjectId(userId)}, 1, 1);
       const userName = userInfo?.data[0].firstName + " " + userInfo?.data[0].lastName;
-      const postInfo = await postDao.list({_id: result._id}, 1, 1);
+      const postInfo = await postDao.list({_id: new mongoose.Types.ObjectId(postId)}, 1, 1);
       const postedBy = postInfo?.data[0]?.postedBy;
 
       notificationDao.save({
@@ -157,7 +157,7 @@ class PostController {
         text: CONSTANTS.NOTIFICATION_TEXT.POST_UNLIKED(userName),
         url: '#',
       }).then((response: {[key: string]: any}) => {
-        global.socketInstance.sendMessage(postedBy, SOCKET.EVENTS.POST_UNLIKED, response);
+        global.socketInstance.sendMessage(postedBy.toString(), SOCKET.EVENTS.POST_UNLIKED, response);
       });
 
       return result;
@@ -173,6 +173,24 @@ class PostController {
         userId: new mongoose.Types.ObjectId(userId),
         text: text,
       }); 
+
+      const userInfo = await userDao.list({_id: new mongoose.Types.ObjectId(userId)}, 1, 1);
+      const userName = userInfo?.data[0].firstName + " " + userInfo?.data[0].lastName;
+      const postInfo = await postDao.list({_id: new mongoose.Types.ObjectId(postId)}, 1, 1);
+      const postedBy = postInfo?.data[0]?.postedBy;
+
+      notificationDao.save({
+        type: CONSTANTS.NOTIFICATION_TYPE.NORMAL,
+        action: CONSTANTS.NOTIFICATION_ACTION.COMMENT_ADDED,
+        sender: new mongoose.Types.ObjectId(userId),
+        receiver: new mongoose.Types.ObjectId(postedBy),
+        status: CONSTANTS.NOTIFICATION_STATUS.NOT_SEEN,
+        text: CONSTANTS.NOTIFICATION_TEXT.COMMENT_ADDED(userName),
+        url: '#',
+      }).then((response: {[key: string]: any}) => {
+        global.socketInstance.sendMessage(postedBy.toString(), SOCKET.EVENTS.COMMENT_ADDED, response);
+      });      
+
       return result;
     } catch(error){
       throw error;

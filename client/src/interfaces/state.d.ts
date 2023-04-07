@@ -7,4 +7,6 @@ export default interface ReduxState {
   friends: Array<{[key: string]: any}>,
   userProfile: {[key: string]: any} | null,
   chatMessages: {[key: string]: any},
-};S
+  unseenChatMessages: boolean,
+  unseenNotifications: boolean,
+};

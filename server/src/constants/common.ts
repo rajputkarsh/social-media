@@ -31,6 +31,7 @@ const NOTIFICATION_ACTION = {
   POST_UNLIKED: 'POST_UNLIKED',
   FRIEND_ADDED: 'FRIEND_ADDED',
   FRIEND_REQUESTED: 'FRIEND_REQUESTED',
+  COMMENT_ADDED: 'COMMENT_ADDED',
 };
 
 const NOTIFICATION_TEXT = {
@@ -39,6 +40,7 @@ const NOTIFICATION_TEXT = {
   POST_UNLIKED: (name: string) => `${name} has unliked your post`,
   FRIEND_ADDED: (name: string) => `${name} has added as their friend`,
   FRIEND_REQUESTED: (name: string) => `${name} has requested you to add them as friend`,
+  COMMENT_ADDED: (name: string) => `${name} has added a comment on your post`,
 }
 
 const DEFAULT_PAGE_NUMBER = 1;
