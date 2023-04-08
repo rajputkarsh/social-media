@@ -6,7 +6,7 @@ import { NotificationModel } from "../../models";
 
 
 
-class VoteDao{
+class NotificationDao{
   async list(query: Object, page: number|null, limit: number|null) {
     try {
 
@@ -20,9 +20,23 @@ class VoteDao{
       const data = await NotificationModel.aggregate([
         {
           $match: {
-            ...query,
-            status: CONSTANTS.STATUS.ACTIVE
+            ...query
           },
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'sender',
+            foreignField: '_id',
+            as: 'sender'
+          }
+        },
+        {
+          $addFields: {
+            sender: {
+                "$arrayElemAt": ["$sender", -1]
+            }
+          }
         },
         {
           $sort: {
@@ -88,4 +102,4 @@ class VoteDao{
 
 }
 
-export default new VoteDao();
+export default new NotificationDao();

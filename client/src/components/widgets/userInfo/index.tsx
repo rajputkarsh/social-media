@@ -53,7 +53,7 @@ const UserInfo = ({userId}: {userId: string}) => {
       setUser((_prev) => userInfo);
     }
 
-  }, []);
+  }, [userId]);
 
 
   if (!user) return <></>;

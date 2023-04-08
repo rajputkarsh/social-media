@@ -7,5 +7,6 @@ export default interface INotification{
   receiver: ObjectId | mongoose.Types.ObjectId,
   status?: String,
   text: String,
+  entity?: ObjectId | mongoose.Types.ObjectId,
   url?: String,
 }

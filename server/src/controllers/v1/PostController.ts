@@ -39,14 +39,15 @@ class PostController {
         friends?.data?.forEach((friend: {[key: string]: any}) => {
           notificationDao.save({
             type: CONSTANTS.NOTIFICATION_TYPE.NORMAL,
-            action: CONSTANTS.NOTIFICATION_ACTION.POST_ADDED,
+            action: CONSTANTS.NOTIFICATION_ACTION.POST,
             sender: new mongoose.Types.ObjectId(userId),
             receiver: new mongoose.Types.ObjectId(friend?.currentFriend.toString()),
             status: CONSTANTS.NOTIFICATION_STATUS.NOT_SEEN,
+            entity: newPost?._id,
             text: CONSTANTS.NOTIFICATION_TEXT.POST_ADDED(friend?.user?.firstName + " " + friend?.user?.lastName),
             url: '#',
           }).then((response: {[key: string]: any}) => {
-            global.socketInstance.sendMessage(friend?.currentFriend.toString(), SOCKET.EVENTS.POST_ADDED, response);
+            global.socketInstance.sendMessage(friend?.currentFriend.toString(), SOCKET.EVENTS.NOTIFICATION, {type: SOCKET.EVENTS.POST_ADDED, data: response});
           })
         });
       }
@@ -99,14 +100,15 @@ class PostController {
 
       notificationDao.save({
         type: CONSTANTS.NOTIFICATION_TYPE.NORMAL,
-        action: CONSTANTS.NOTIFICATION_ACTION.POST_ADDED,
+        action: CONSTANTS.NOTIFICATION_ACTION.POST,
         sender: new mongoose.Types.ObjectId(userId),
         receiver: new mongoose.Types.ObjectId(postedBy),
+        entity: postInfo?.data[0]?._id,
         status: CONSTANTS.NOTIFICATION_STATUS.NOT_SEEN,
         text: CONSTANTS.NOTIFICATION_TEXT.POST_LIKED(userName),
         url: '#',
       }).then((response: {[key: string]: any}) => {
-        global.socketInstance.sendMessage(postedBy.toString(), SOCKET.EVENTS.POST_LIKED, response);
+        global.socketInstance.sendMessage(postedBy.toString(), SOCKET.EVENTS.NOTIFICATION, {type: SOCKET.EVENTS.POST_LIKED, data: response});
       });
 
       return result;
@@ -150,14 +152,15 @@ class PostController {
 
       notificationDao.save({
         type: CONSTANTS.NOTIFICATION_TYPE.NORMAL,
-        action: CONSTANTS.NOTIFICATION_ACTION.POST_ADDED,
+        action: CONSTANTS.NOTIFICATION_ACTION.POST,
         sender: new mongoose.Types.ObjectId(userId),
         receiver: new mongoose.Types.ObjectId(postedBy),
         status: CONSTANTS.NOTIFICATION_STATUS.NOT_SEEN,
+        entity: postInfo?.data[0]?._id,
         text: CONSTANTS.NOTIFICATION_TEXT.POST_UNLIKED(userName),
         url: '#',
       }).then((response: {[key: string]: any}) => {
-        global.socketInstance.sendMessage(postedBy.toString(), SOCKET.EVENTS.POST_UNLIKED, response);
+        global.socketInstance.sendMessage(postedBy.toString(), SOCKET.EVENTS.NOTIFICATION, {type: SOCKET.EVENTS.POST_UNLIKED, data: response});
       });
 
       return result;
@@ -181,14 +184,15 @@ class PostController {
 
       notificationDao.save({
         type: CONSTANTS.NOTIFICATION_TYPE.NORMAL,
-        action: CONSTANTS.NOTIFICATION_ACTION.COMMENT_ADDED,
+        action: CONSTANTS.NOTIFICATION_ACTION.POST,
         sender: new mongoose.Types.ObjectId(userId),
         receiver: new mongoose.Types.ObjectId(postedBy),
         status: CONSTANTS.NOTIFICATION_STATUS.NOT_SEEN,
+        entity: postInfo?.data[0]?._id,
         text: CONSTANTS.NOTIFICATION_TEXT.COMMENT_ADDED(userName),
         url: '#',
       }).then((response: {[key: string]: any}) => {
-        global.socketInstance.sendMessage(postedBy.toString(), SOCKET.EVENTS.COMMENT_ADDED, response);
+        global.socketInstance.sendMessage(postedBy.toString(), SOCKET.EVENTS.NOTIFICATION, {type: SOCKET.EVENTS.COMMENT_ADDED, data: response});
       });      
 
       return result;

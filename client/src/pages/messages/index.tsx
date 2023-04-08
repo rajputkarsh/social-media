@@ -29,7 +29,7 @@ const Messages = () => {
       });
       data['status'] = 'SEEN';
     }
-    let previousMessages = JSON.parse(JSON.stringify(messages[messageData?.sender  as string]));
+    let previousMessages = JSON.parse(JSON.stringify(messages[messageData?.sender  as string])) || [];
     previousMessages.unshift(data);
     dispatch(setMessages({chatMessages: {...messages, [messageData?.sender  as string]: previousMessages}}));    
   });

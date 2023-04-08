@@ -12,7 +12,7 @@ postRouter.post(
   "/",
   postValidator.add,
   userMiddleware.authenticate,
-  async  function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
+  async function(req: CustomRequest.UserRequest, res: Response, next: NextFunction){
     try{
       const result = await postController.add({
         text    : req.body.text,

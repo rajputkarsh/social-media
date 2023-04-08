@@ -32,6 +32,10 @@ export default {
   SEND_MESSAGE: () => `${import.meta.env.VITE_API_BASE_URL}/chat/send`,
   MARK_MESSAGE_SEEN: (friendId: string) => `${import.meta.env.VITE_API_BASE_URL}/chat/${friendId}/mark-seen`,
 
+  // notification
+  LIST_NOTIFICATIONS: () => `${import.meta.env.VITE_API_BASE_URL}/notification`,
+  MARK_NOTIFICATION_SEEN: (notificationId: string) => `${import.meta.env.VITE_API_BASE_URL}/notification/mark-seen/${notificationId}`,
+
   // socket: 
   SOCKET_BASE_URL: () => `${import.meta.env.VITE_BACKEND_URL}`
 };

@@ -142,4 +142,18 @@ export default {
     message: 'Message marked seen successfully',
     data   : data,
   }),
+
+  // NOTIFICATION related
+  NOTIFICATION_LIST: (data: Object) => ({
+    status : HTTP_STATUS_CODE.OK,
+    type   : 'NOTIFICATION_LIST',
+    message: 'Notifications fetched successfully',
+    data   : data,
+  }), 
+  NOTIFICATIONS_MARKED_SEEN: (data: Object) => ({
+    status : HTTP_STATUS_CODE.OK,
+    type   : 'NOTIFICATIONS_MARKED_SEEN',
+    message: 'Notifications marked seen successfully',
+    data   : data,
+  }), 
 };

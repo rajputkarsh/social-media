@@ -37,7 +37,7 @@ function MessageBox({ friendId }: {friendId: string | undefined | null}) {
   const getLastChatMessageTime = (): string => {
     if( !messages[friendId as string] || messages[friendId as string].length < 1) return '';
     const hours = (moment().utc().diff(moment(messages[friendId as string][0]?.createdAt)))/3600000;
-    return 'Last Message: ' + (Math.round(hours) > 0 ? `${Math.round(hours)}h ago` : `${Math.round(hours * 60)} mins ago`);
+    return 'Last Message: ' + (Math.round(hours) > 0 ? `${Math.round(hours)}h ago` : `${Math.round(hours * 60)}mins ago`);
   };
   
   useEffect(() => {

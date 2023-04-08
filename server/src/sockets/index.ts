@@ -37,9 +37,9 @@ export class WebSocket{
   sendMessage(userId: string, type: string, message: {[key: string]: any}){
     try{
       console.log(`Sending Socket to - `, userId)
-      this._io.sockets.in(userId).emit(type, message);
+      console.log('result - ', this._io.sockets.in(userId).emit(type, message));
     } catch(error){
-      throw error;
+      console.log('Error while sending socket - ', error);
     }
   }
 

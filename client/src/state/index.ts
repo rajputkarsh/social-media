@@ -10,6 +10,7 @@ const initialState: ReduxState = {
   friends: [],
   chatMessages: {},
   unseenChatMessages: false,
+  notifications: [],
   unseenNotifications: false,
 };
 
@@ -53,6 +54,9 @@ export const authSlice = createSlice({
     setUnseenNotifications: (state: ReduxState, action) => {
       state.unseenNotifications = action.payload.areUnseenNotifications;
     },
+    setNotifications: (state: ReduxState, action) => {
+      state.notifications = action.payload.notifications;
+    },
   },
 });
 
@@ -67,6 +71,7 @@ export const {
   setMessages,
   setUnseenChatMessages,
   setUnseenNotifications,
+  setNotifications,
 } = authSlice.actions;
 
 export default authSlice.reducer;

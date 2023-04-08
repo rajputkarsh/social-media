@@ -27,7 +27,7 @@ const FriendListWidget = ({ userId }: { userId: string }) => {
 
   useEffect(() => {
     getFriends();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <WidgetContainer>

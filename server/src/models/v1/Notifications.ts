@@ -33,6 +33,10 @@ const notificationSchema: Schema = new Schema<INotification>({
     type: String,
     required: false,    
   },
+  entity: {
+    type: ObjectId,
+    required: false
+  },
   status: {
     type: String,
     required: false,

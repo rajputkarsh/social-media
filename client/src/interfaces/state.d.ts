@@ -1,5 +1,6 @@
 
-export default interface ReduxState {
+export default interface 
+ReduxState {
   mode: string,
   user: {[key: string]: any} | null,
   token: string | null,
@@ -8,5 +9,6 @@ export default interface ReduxState {
   userProfile: {[key: string]: any} | null,
   chatMessages: {[key: string]: any},
   unseenChatMessages: boolean,
+  notifications: Array<{[key: string]: any}>,
   unseenNotifications: boolean,
 };

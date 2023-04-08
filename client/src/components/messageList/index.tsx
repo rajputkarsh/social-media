@@ -42,7 +42,7 @@ function MessageList() {
       time:
         Math.round(hours) > 0
           ? `${Math.round(hours)}h ago`
-          : `${Math.round(hours * 60)} mins ago`,
+          : `${Math.round(hours * 60)}mins ago`,
       seen:
         lastMessage[0].sender == user?.userId ||
         lastMessage[0]?.status == "SEEN",

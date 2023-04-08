@@ -14,6 +14,14 @@ const Profile = () => {
   const userInfo = useSelector((state: ReduxState) => state.user);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
+  const [user, setUser] = useState<string | null>(null);
+
+  useEffect(() => {
+    setUser(() => (userId || userInfo?.userId) as string);
+  }, [userId]);
+
+  if(!user) return null;
+
   return (
     <Box>
       <Navbar />
@@ -25,16 +33,16 @@ const Profile = () => {
         justifyContent="center"
       >
         <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
-          <UserInfo userId={userId || userInfo?.userId}/>
+          <UserInfo userId={user}/>
           <Box m="2rem 0" />
-          <FriendList userId={userId || userInfo?.userId} />
+          <FriendList userId={user} />
         </Box>
         <Box
           flexBasis={isNonMobileScreens ? "42%" : undefined}
           mt={isNonMobileScreens ? undefined : "2rem"}
         >
           {
-            userId === userInfo?.userId && <AddPost/>
+            user === userInfo?.userId && <AddPost/>
           }
           
           <Box m="2rem 0" />

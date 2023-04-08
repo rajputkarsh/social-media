@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   IconButton,
@@ -19,20 +19,28 @@ import {
   Close,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { setMode, setLogout } from "../../state";
+import { setMode, setLogout, setNotifications } from "../../state";
 import { useNavigate } from "react-router-dom";
 import FlexContainer from "../../containers/flexContainer";
 import { CustomTheme, ReduxState } from "../../interfaces";
-import { SETTINGS } from "../../constants";
+import { SETTINGS, URL } from "../../constants";
 import SearchBar from "../widgets/searchBar";
+import NotificationList from "../notificationList";
+import { useContext } from "react";
+import SocketContext from "../../context/socket";
 
 const Navbar = () => {
+
+  const socketInstance = useContext(SocketContext);
+
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState<boolean>(false);
   const [notificationMenuAnchor, setNotificationMenuAnchor] = useState<null | HTMLElement>(null);
   const open = Boolean(notificationMenuAnchor);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state: ReduxState) => state.user);
+  const token = useSelector((state: ReduxState) => state.user?.token);
+  const notifications = useSelector((state: ReduxState) => state.notifications);
   const isNonMobileScreens: boolean = useMediaQuery("(min-width: 1000px)");
 
   const { palette } : { palette: CustomTheme } = useTheme();
@@ -41,12 +49,31 @@ const Navbar = () => {
   const background = palette.background.default;
   const alt = palette.background.alt;
 
-  const fullName = `${user?.firstName} ${user?.lastName}`;
+  useEffect(() => {
+    fetch(URL.LIST_NOTIFICATIONS(), {  
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },      
+    }).then((response) => {
+      if(response.status == 200){
+        response.json().then((data) => {
+          dispatch(setNotifications({notifications: data.data?.data}));
+        })
+      } else{
+        console.log('Something went wrong');
+      }
+    })
+  }, []);
 
   const handleLogout = () => {
     dispatch(setLogout());
     navigate('/')
   }
+
+  socketInstance.on('NOTIFICATION', (notification: {[key: string]: any}) => {
+    const previousNotifications: Array<{[key: string]: any}> = JSON.parse(JSON.stringify(notifications)) || [];
+    previousNotifications.unshift(notification.data);
+    dispatch(setNotifications(previousNotifications));
+  })
 
   const handleNotificationMenuButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setNotificationMenuAnchor(event.currentTarget);
@@ -64,10 +91,9 @@ const Navbar = () => {
       MenuListProps={{
         'aria-labelledby': 'notification-button',
       }}
+      sx={{maxHeight: '40vh'}}
     >
-      <MenuItem onClick={handleNotificationMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleNotificationMenuClose}>My account</MenuItem>
-      <MenuItem onClick={handleNotificationMenuClose}>Logout</MenuItem>
+      <NotificationList/>
     </MenuHolder>    
   );
 
@@ -118,7 +144,7 @@ const Navbar = () => {
           <NotificationMenu />
           <FormControl variant="standard">
             <Select
-              value={fullName}
+              value={`${user?.firstName} ${user?.lastName}`}
               sx={{
                 backgroundColor: neutralLight,
                 width: "150px",
@@ -134,11 +160,11 @@ const Navbar = () => {
               }}
               input={<InputBase />}
             >
-              <MenuItem value={fullName}  onClick={() => {
+              <MenuItem value={`${user?.firstName} ${user?.lastName}`}  onClick={() => {
                   navigate(`/profile/${user?.userId}`);
                   navigate(0);
                 }}>
-                <Typography>{fullName}</Typography>
+                <Typography>{`${user?.firstName} ${user?.lastName}`}</Typography>
               </MenuItem>
               <MenuItem onClick={() => handleLogout()}>Log Out</MenuItem>
             </Select>
@@ -207,7 +233,7 @@ const Navbar = () => {
             <NotificationMenu />
             <FormControl variant="standard">
               <Select
-                value={fullName}
+                value={`${user?.firstName} ${user?.lastName}`}
                 sx={{
                   backgroundColor: neutralLight,
                   width: "150px",
@@ -223,11 +249,11 @@ const Navbar = () => {
                 }}
                 input={<InputBase />}
               >
-                <MenuItem value={fullName} onClick={() => {
+                <MenuItem value={`${user?.firstName} ${user?.lastName}`} onClick={() => {
                   navigate(`/profile/${user?.userId}`);
                   navigate(0);
                 }}>
-                  <Typography>{fullName}</Typography>
+                  <Typography>{`${user?.firstName} ${user?.lastName}`}</Typography>
                 </MenuItem>
                 <MenuItem onClick={() => dispatch(setLogout())}>
                   Log Out
