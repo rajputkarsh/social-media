@@ -15,7 +15,7 @@ function NotificationList() {
 
   const getTime = (time: string) => {
     
-    const hours: number = (new Date().getTime() - new Date(time).getTime()) / 60000; 
+    const hours: number = (new Date().getTime() - new Date(time).getTime()) / 3600000; 
 
     return Math.round(hours) > 0
       ? `${Math.round(hours)}h`

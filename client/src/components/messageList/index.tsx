@@ -34,7 +34,7 @@ function MessageList() {
 
     let lastMessage = lastMessages[userId];
 
-    const hours: number = (new Date().getTime() - new Date(lastMessage[0]?.createdAt).getTime()) / 60000; 
+    const hours: number = (new Date().getTime() - new Date(lastMessage[0]?.createdAt).getTime()) / 3600000; 
 
     return {
       message: lastMessage[0]?.media ? "Media" : lastMessage[0]?.message,
