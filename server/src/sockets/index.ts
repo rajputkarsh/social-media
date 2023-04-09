@@ -14,7 +14,8 @@ export class WebSocket{
         cors: {
           origin: "*",
           credentials: true,
-        }
+        },
+        transports: ['websocket', 'polling']
       }
     );
 
