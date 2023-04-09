@@ -61,6 +61,10 @@ function App() {
               path="/messages/:friendId"
               element={isAuth ? <Messages /> : <Navigate to="/login" />}
             />
+            <Route 
+              path="*"
+              element={isAuth ? <Home /> : <Navigate to="/login" />}
+            />
           </Routes>
         </ThemeProvider>
       </BrowserRouter>
