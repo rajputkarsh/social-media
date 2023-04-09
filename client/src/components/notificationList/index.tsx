@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from "react-redux";
 import FlexContainer from "../../containers/flexContainer";
 import { ReduxState } from "../../interfaces";
 import ProfilePicture from "../profilePicture";
-import * as moment from "moment-timezone";
 import { URL } from "../../constants";
 import { setNotifications } from "../../state";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +14,8 @@ function NotificationList() {
   const token = useSelector((state: ReduxState) => state.user?.token);
 
   const getTime = (time: string) => {
-    const hours = moment().utc().diff(moment(time)) / 3600000;
+    
+    const hours: number = (new Date().getTime() - new Date(time).getTime()) / 60000; 
 
     return Math.round(hours) > 0
       ? `${Math.round(hours)}h`

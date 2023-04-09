@@ -7,7 +7,6 @@ import { useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ProfilePicture from "../profilePicture";
-import * as moment from "moment-timezone";
 
 function MessageList() {
   const navigate = useNavigate();
@@ -34,8 +33,8 @@ function MessageList() {
       return { message: "No Chat Found", time: "-", seen: true };
 
     let lastMessage = lastMessages[userId];
-    const hours =
-      moment().utc().diff(moment(lastMessage[0]?.createdAt)) / 3600000;
+
+    const hours: number = (new Date().getTime() - new Date(lastMessage[0]?.createdAt).getTime()) / 60000; 
 
     return {
       message: lastMessage[0]?.media ? "Media" : lastMessage[0]?.message,
